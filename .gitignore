@@ -68,6 +68,7 @@ logs/
 *.log
 *.tmp
 *.bak
+*.bat
 
 # IDE & Editor Configurations
 .vscode/
