@@ -1,0 +1,79 @@
+# ==========================================
+# Root .gitignore for CareerPilot AI
+# ==========================================
+
+# Environments & Secret Keys (CRITICAL: Never commit secrets)
+.env
+.env.*
+!.env.example
+*.env
+
+# Python & Virtual Environments
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# Database & Local Storage
+*.db
+*.sqlite
+*.sqlite3
+backend/app/*.db
+careerpilot.db
+
+# User Uploads & Media
+uploads/
+uploads/*
+!uploads/.gitkeep
+
+# Node.js & Frontend
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Logs & Temporary Files
+logs/
+*.log
+*.tmp
+*.bak
+
+# IDE & Editor Configurations
+.vscode/
+!.vscode/extensions.json
+.idea/
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+Thumbs.db

@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: careerpilot-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - SECRET_KEY=production-secret-key-change-me-in-production
+      - CORS_ORIGINS=http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173
+      - LLM_PROVIDER=gemini
+    volumes:
+      - backend-uploads:/app/uploads
+
+volumes:
+  backend-uploads:
