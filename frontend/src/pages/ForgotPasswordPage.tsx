@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import { Mail, ArrowLeft, CheckCircle2, Sparkles } from 'lucide-react';
+import { Mail, ArrowLeft, CheckCircle2, Sparkles, AlertCircle } from 'lucide-react';
+import { sendPasswordResetEmail } from 'firebase/auth';
+import { auth } from '../config/firebase';
 import { Button } from '../components/common/Button';
 import { Card } from '../components/common/Card';
 import { authApi } from '../api/endpoints';
+import { getAuthErrorMessage } from '../utils/authErrors';
 
 interface ForgotPasswordPageProps {
   onNavigateLogin: () => void;
@@ -12,16 +15,30 @@ export const ForgotPasswordPage: React.FC<ForgotPasswordPageProps> = ({ onNaviga
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) return;
+    const cleanEmail = email.trim();
+    if (!cleanEmail) {
+      setError('Please enter your registered email address.');
+      return;
+    }
+    setError(null);
     setIsLoading(true);
     try {
-      await authApi.forgotPassword(email);
+      // 1. Send genuine password reset email via Firebase Auth
+      await sendPasswordResetEmail(auth, cleanEmail);
       setSubmitted(true);
-    } catch {
-      setSubmitted(true);
+    } catch (fbErr: any) {
+      console.warn('Firebase password reset notice:', fbErr);
+      // Fallback: try backend API as secondary attempt
+      try {
+        await authApi.forgotPassword(cleanEmail);
+        setSubmitted(true);
+      } catch {
+        setError(getAuthErrorMessage(fbErr));
+      }
     } finally {
       setIsLoading(false);
     }
@@ -43,14 +60,21 @@ export const ForgotPasswordPage: React.FC<ForgotPasswordPageProps> = ({ onNaviga
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md px-4">
         <Card className="p-8 shadow-xl">
+          {error && (
+            <div className="mb-6 p-4 rounded-xl bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-900 text-rose-800 dark:text-rose-300 text-xs flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 flex-shrink-0 text-rose-500" />
+              <span>{error}</span>
+            </div>
+          )}
+
           {submitted ? (
             <div className="text-center py-4">
               <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400 flex items-center justify-center mx-auto mb-4">
                 <CheckCircle2 className="w-6 h-6" />
               </div>
               <h3 className="text-base font-bold text-slate-900 dark:text-white">Reset Link Dispatched</h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">
-                If an account exists for <span className="font-semibold text-slate-700 dark:text-slate-300">{email}</span>, a secure recovery email has been sent.
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
+                A password reset email has been sent to <span className="font-semibold text-slate-700 dark:text-slate-300">{email}</span>. Please check your inbox and spam folder, and click the link to reset your password.
               </p>
               <Button
                 variant="outline"

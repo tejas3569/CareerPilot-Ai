@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Sparkles, Mail, Lock, User, Briefcase, ArrowRight, AlertCircle } from 'lucide-react';
+import { Sparkles, Mail, Lock, User, Briefcase, ArrowRight, AlertCircle, Eye, EyeOff, Check } from 'lucide-react';
 import { Button } from '../components/common/Button';
 import { Card } from '../components/common/Card';
 import { useAuth } from '../context/AuthContext';
+import { getAuthErrorMessage } from '../utils/authErrors';
 
 interface RegisterPageProps {
   onNavigateLogin: () => void;
@@ -17,27 +18,36 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [targetRole, setTargetRole] = useState('Software Developer');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Password rules: at least 8 characters and at least 1 special character (e.g. #tejas3569#)
+  const isMinLength = password.length >= 8;
+  const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>_\-+=\\/\[\]~`]/.test(password);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password) {
+    if (!email || !password || !name) {
       setError('Please fill out all required fields.');
       return;
     }
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters long.');
+    if (!isMinLength) {
+      setError('Password must be at least 8 characters long.');
+      return;
+    }
+    if (!hasSpecialChar) {
+      setError('Password must contain at least one special character (e.g. #tejas3569#).');
       return;
     }
     setError(null);
     setIsLoading(true);
     try {
-      await register(email, password, name, targetRole);
+      await register(email.trim(), password, name.trim(), targetRole);
       onSuccess();
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'Registration failed. Please try again.');
+      setError(getAuthErrorMessage(err));
     } finally {
       setIsLoading(false);
     }
@@ -136,13 +146,42 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
                   <Lock className="w-4 h-4" />
                 </div>
                 <input
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
+                  placeholder="e.g. #tejas3569#"
+                  className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
                   required
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors cursor-pointer"
+                  tabIndex={-1}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+
+              {/* Live Password Requirements checklist */}
+              <div className="mt-2 space-y-1.5 text-xs">
+                <div className={`flex items-center gap-1.5 transition-colors ${isMinLength ? 'text-emerald-600 dark:text-emerald-400 font-medium' : 'text-slate-400 dark:text-slate-500'}`}>
+                  {isMinLength ? (
+                    <Check className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
+                  ) : (
+                    <span className="w-3.5 h-3.5 flex items-center justify-center text-[10px] text-slate-400 font-bold">•</span>
+                  )}
+                  <span>At least 8 characters long</span>
+                </div>
+                <div className={`flex items-center gap-1.5 transition-colors ${hasSpecialChar ? 'text-emerald-600 dark:text-emerald-400 font-medium' : 'text-slate-400 dark:text-slate-500'}`}>
+                  {hasSpecialChar ? (
+                    <Check className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
+                  ) : (
+                    <span className="w-3.5 h-3.5 flex items-center justify-center text-[10px] text-slate-400 font-bold">•</span>
+                  )}
+                  <span>Includes special character (e.g. <code className="bg-slate-100 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 px-1 py-0.5 rounded text-[11px] font-mono font-semibold">#tejas3569#</code>)</span>
+                </div>
               </div>
             </div>
 
@@ -173,11 +212,12 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
           <button
             type="button"
             onClick={async () => {
+              setError(null);
               try {
                 await loginWithGoogle();
                 onSuccess();
               } catch (err: any) {
-                setError(err.message || 'Google sign-up failed');
+                setError(getAuthErrorMessage(err));
               }
             }}
             className="w-full flex items-center justify-center gap-2 py-2.5 px-4 border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800/80 text-slate-700 dark:text-slate-200 text-sm font-semibold shadow-xs transition-colors cursor-pointer"

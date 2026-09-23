@@ -127,6 +127,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const login = async (email: string, password: string) => {
     let fbSuccess = false;
+    let fbError: any = null;
     try {
       const userCred = await signInWithEmailAndPassword(auth, email, password);
       fbSuccess = true;
@@ -136,6 +137,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setToken(idToken);
     } catch (fbErr: any) {
       console.warn('Firebase login attempt:', fbErr?.message);
+      fbError = fbErr;
     }
 
     // Also attempt backend login for local API parity
@@ -145,7 +147,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       await refreshUser();
     } catch (apiErr) {
       if (!fbSuccess) {
-        throw apiErr;
+        throw fbError || apiErr;
       }
     }
   };
@@ -178,6 +180,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setToken(idToken);
     } catch (fbErr: any) {
       console.warn('Firebase register notice:', fbErr?.message);
+      throw fbErr;
     }
 
     // Also register in backend if reachable
