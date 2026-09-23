@@ -1,6 +1,14 @@
 // CareerPilot AI Service Worker for PWA Support
-const CACHE_NAME = 'careerpilot-cache-v1';
-const PRECACHE_URLS = ['/', '/index.html', '/favicon.svg', '/icon-192.png', '/icon-512.png', '/manifest.json'];
+const CACHE_NAME = 'careerpilot-cache-v2';
+const PRECACHE_URLS = [
+  '/',
+  '/index.html',
+  '/favicon.svg',
+  '/logo.png',
+  '/app-icon-192.png',
+  '/app-icon-512.png',
+  '/manifest.json'
+];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(

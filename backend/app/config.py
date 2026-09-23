@@ -35,7 +35,8 @@ class Settings(BaseSettings):
         "http://localhost:3000",
         "http://127.0.0.1:3000",
         "https://career-pilot-ai.vercel.app",
-        "https://careerpilot-ai.vercel.app"
+        "https://careerpilot-ai.vercel.app",
+        "https://career-pilot-ai-ten-gilt.vercel.app"
     ]
 
     @field_validator("CORS_ORIGINS", mode="before")
