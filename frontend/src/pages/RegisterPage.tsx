@@ -23,7 +23,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Password rules: at least 8 characters and at least 1 special character (e.g. #tejas3569#)
+  // Password rules: at least 8 characters and at least 1 special character (e.g. !, @, #, $)
   const isMinLength = password.length >= 8;
   const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>_\-+=\\/\[\]~`]/.test(password);
 
@@ -38,7 +38,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
       return;
     }
     if (!hasSpecialChar) {
-      setError('Password must contain at least one special character (e.g. #tejas3569#).');
+      setError('Password must contain at least one special character (e.g. !, @, #, $).');
       return;
     }
     setError(null);
@@ -149,7 +149,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="e.g. #tejas3569#"
+                  placeholder="••••••••"
                   className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
                   required
                 />
@@ -180,7 +180,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
                   ) : (
                     <span className="w-3.5 h-3.5 flex items-center justify-center text-[10px] text-slate-400 font-bold">•</span>
                   )}
-                  <span>Includes special character (e.g. <code className="bg-slate-100 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 px-1 py-0.5 rounded text-[11px] font-mono font-semibold">#tejas3569#</code>)</span>
+                  <span>Includes special character (e.g. <code className="bg-slate-100 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 px-1 py-0.5 rounded text-[11px] font-mono font-semibold">!, @, #, $, %</code>)</span>
                 </div>
               </div>
             </div>

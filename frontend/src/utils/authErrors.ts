@@ -31,7 +31,7 @@ export function getAuthErrorMessage(err: any): string {
     return 'Incorrect email or password. Please verify your credentials or click "Forgot password?".';
   }
   if (code === 'auth/weak-password') {
-    return 'Password is too weak. Please use at least 8 characters with a special character (e.g. #tejas3569#).';
+    return 'Password is too weak. Please use at least 8 characters with a special character (e.g. !, @, #, $).';
   }
   if (code === 'auth/too-many-requests') {
     return 'Access temporarily disabled due to many failed attempts. Please wait a few moments or reset your password.';
