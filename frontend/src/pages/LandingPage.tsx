@@ -68,9 +68,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       {/* Top Navigation */}
       <header className="sticky top-0 z-30 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 px-6 sm:px-12 h-20 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-indigo-200 dark:shadow-none">
-            <Sparkles className="w-6 h-6" />
-          </div>
+          <img
+            src="/favicon.svg"
+            alt="CareerPilot AI"
+            className="w-10 h-10 rounded-xl shadow-md shadow-indigo-500/20"
+          />
           <div>
             <span className="font-bold text-lg tracking-tight text-slate-900 dark:text-white">
               CareerPilot <span className="text-indigo-600 dark:text-indigo-400">AI</span>

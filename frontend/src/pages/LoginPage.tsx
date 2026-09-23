@@ -58,9 +58,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
-        <div className="mx-auto w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 to-indigo-500 flex items-center justify-center text-white shadow-lg shadow-indigo-200 dark:shadow-none mb-4">
-          <Sparkles className="w-7 h-7" />
-        </div>
+        <img
+          src="/favicon.svg"
+          alt="CareerPilot AI"
+          className="mx-auto w-12 h-12 rounded-2xl shadow-lg shadow-indigo-500/20 mb-4"
+        />
         <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white">
           Sign In to CareerPilot <span className="text-indigo-600 dark:text-indigo-400">AI</span>
         </h2>
