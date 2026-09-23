@@ -59,9 +59,9 @@ export const LoginPage: React.FC<LoginPageProps> = ({
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
         <img
-          src="/favicon.svg"
+          src="/logo.png"
           alt="CareerPilot AI"
-          className="mx-auto w-12 h-12 rounded-2xl shadow-lg shadow-indigo-500/20 mb-4"
+          className="mx-auto w-14 h-14 rounded-2xl shadow-xl shadow-indigo-500/25 mb-4 object-cover"
         />
         <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white">
           Sign In to CareerPilot <span className="text-indigo-600 dark:text-indigo-400">AI</span>

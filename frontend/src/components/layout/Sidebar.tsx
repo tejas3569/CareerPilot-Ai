@@ -87,9 +87,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
           title="Return to Dashboard Home"
         >
           <img
-            src="/favicon.svg"
+            src="/logo.png"
             alt="CareerPilot AI"
-            className="w-9 h-9 rounded-xl shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform"
+            className="w-9 h-9 rounded-xl shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform object-cover"
           />
           <div>
             <h1 className="font-bold text-base tracking-tight text-slate-900 dark:text-white leading-none">

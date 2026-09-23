@@ -69,9 +69,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       <header className="sticky top-0 z-30 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 px-6 sm:px-12 h-20 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <img
-            src="/favicon.svg"
+            src="/logo.png"
             alt="CareerPilot AI"
-            className="w-10 h-10 rounded-xl shadow-md shadow-indigo-500/20"
+            className="w-10 h-10 rounded-xl shadow-md shadow-indigo-500/20 object-cover"
           />
           <div>
             <span className="font-bold text-lg tracking-tight text-slate-900 dark:text-white">
