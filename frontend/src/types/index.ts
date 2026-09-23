@@ -1,21 +1,23 @@
 export interface Profile {
-  id?: number;
-  user_id?: number;
+  id?: number | string;
+  user_id?: number | string;
   name: string;
-  college: string;
-  degree: string;
-  graduation_year: string;
+  college?: string;
+  degree?: string;
+  graduation_year?: string;
   target_role: string;
-  bio: string;
-  github: string;
-  linkedin: string;
-  portfolio: string;
+  bio?: string;
+  github?: string;
+  linkedin?: string;
+  portfolio?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface User {
-  id: number;
+  id: number | string;
   email: string;
-  is_active: boolean;
+  is_active?: boolean;
   is_demo: boolean;
   profile?: Profile;
 }
@@ -23,7 +25,7 @@ export interface User {
 export interface AuthResponse {
   access_token: string;
   token_type: string;
-  user_id: number;
+  user_id: number | string;
   email: string;
   is_demo: boolean;
 }
