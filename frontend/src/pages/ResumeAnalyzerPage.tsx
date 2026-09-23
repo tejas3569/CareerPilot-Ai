@@ -69,7 +69,8 @@ export const ResumeAnalyzerPage: React.FC<ResumeAnalyzerPageProps> = ({
         analysis: response.analysis,
       });
     } catch (err: any) {
-      onShowToast(err.response?.data?.detail || 'Failed to analyze resume.', 'error');
+      const msg = err.response?.data?.detail || (err.code === 'ECONNABORTED' ? 'AI server is warming up. Please try again in a few moments.' : err.message === 'Network Error' ? 'Unable to reach backend server. Please verify your connection.' : 'Failed to analyze resume.');
+      onShowToast(msg, 'error');
     } finally {
       setIsUploading(false);
     }
@@ -87,7 +88,8 @@ export const ResumeAnalyzerPage: React.FC<ResumeAnalyzerPageProps> = ({
         analysis: response.analysis,
       });
     } catch (err: any) {
-      onShowToast(err.response?.data?.detail || 'Failed to load sample resume.', 'error');
+      const msg = err.response?.data?.detail || (err.code === 'ECONNABORTED' ? 'AI server is warming up. Please try again in a few moments.' : 'Failed to load sample resume.');
+      onShowToast(msg, 'error');
     } finally {
       setIsUploading(false);
     }

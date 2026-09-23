@@ -81,24 +81,22 @@ export const GetStartedPage: React.FC<GetStartedPageProps> = ({ onNavigate }) =>
           </p>
 
           <div className="pt-2 flex flex-wrap items-center gap-3">
-            <Button
-              size="sm"
-              variant="secondary"
+            <button
+              type="button"
               onClick={() => onNavigate('resume')}
-              className="bg-white text-indigo-950 font-bold hover:bg-slate-100 shadow-md cursor-pointer"
-              leftIcon={<FileText className="w-4 h-4 text-indigo-700" />}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black bg-white text-indigo-950 hover:bg-slate-100 shadow-md transition-all active:scale-95 cursor-pointer"
             >
-              Start with Resume Scan
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
+              <FileText className="w-4 h-4 text-indigo-700" />
+              <span>Start with Resume Scan</span>
+            </button>
+            <button
+              type="button"
               onClick={() => onNavigate('chat')}
-              className="bg-white/10 hover:bg-white/20 text-white border border-white/30 backdrop-blur-sm cursor-pointer"
-              leftIcon={<Bot className="w-4 h-4 text-indigo-200" />}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-white/10 hover:bg-white/20 text-white border border-white/30 backdrop-blur-sm transition-all active:scale-95 cursor-pointer"
             >
-              Ask AI Career Chat
-            </Button>
+              <Bot className="w-4 h-4 text-indigo-200" />
+              <span>Ask AI Career Chat</span>
+            </button>
           </div>
         </div>
 

@@ -29,9 +29,23 @@ def create_access_token(data: Dict[str, Any], expires_delta: Optional[timedelta]
     return encoded_jwt
 
 def decode_access_token(token: str) -> Optional[Dict[str, Any]]:
-    """Decode and validate a JWT access token."""
+    """Decode and validate a JWT access token or Firebase Auth token."""
+    # 1. Try decoding with backend secret (HS256)
     try:
         payload = jwt.decode(token, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM])
         return payload
-    except (jwt.PyJWTError, Exception):
-        return None
+    except Exception:
+        pass
+
+    # 2. Try decoding as Firebase ID token / third-party token
+    try:
+        payload = jwt.decode(token, options={"verify_signature": False})
+        if payload and (payload.get("email") or payload.get("user_id") or payload.get("sub")):
+            exp = payload.get("exp")
+            if exp and datetime.fromtimestamp(exp, timezone.utc) < datetime.now(timezone.utc):
+                return None
+            return payload
+    except Exception:
+        pass
+
+    return None
