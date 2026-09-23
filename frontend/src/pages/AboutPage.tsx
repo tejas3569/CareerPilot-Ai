@@ -190,8 +190,8 @@ export const AboutPage: React.FC<AboutPageProps> = ({
 
           <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-800">
             <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Database</p>
-            <p className="text-sm font-black text-slate-900 dark:text-white mt-1">SQLAlchemy ORM</p>
-            <p className="text-[11px] text-slate-500 mt-0.5">SQLite / PostgreSQL</p>
+            <p className="text-sm font-black text-slate-900 dark:text-white mt-1">Google Firebase</p>
+            <p className="text-[11px] text-slate-500 mt-0.5">Cloud Firestore + Auth</p>
           </div>
 
           <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-800">
