@@ -33,7 +33,8 @@ export const ResumeAnalyzerPage: React.FC<ResumeAnalyzerPageProps> = ({
 }) => {
   const [resume, setResume] = useState<Resume | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isUploading, setIsUploading] = useState(false);
+  const [isUploadingPdf, setIsUploadingPdf] = useState(false);
+  const [isLoadingSample, setIsLoadingSample] = useState(false);
   const [activeTab, setActiveTab] = useState<'overview' | 'sections' | 'keywords' | 'raw'>('overview');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -58,7 +59,7 @@ export const ResumeAnalyzerPage: React.FC<ResumeAnalyzerPageProps> = ({
       return;
     }
 
-    setIsUploading(true);
+    setIsUploadingPdf(true);
     try {
       const response = await resumeApi.uploadResume(file);
       onShowToast('Resume uploaded and analyzed successfully!', 'success');
@@ -72,12 +73,12 @@ export const ResumeAnalyzerPage: React.FC<ResumeAnalyzerPageProps> = ({
       const msg = err.response?.data?.detail || (err.code === 'ECONNABORTED' ? 'AI server is warming up. Please try again in a few moments.' : err.message === 'Network Error' ? 'Unable to reach backend server. Please verify your connection.' : 'Failed to analyze resume.');
       onShowToast(msg, 'error');
     } finally {
-      setIsUploading(false);
+      setIsUploadingPdf(false);
     }
   };
 
   const handleLoadSample = async () => {
-    setIsUploading(true);
+    setIsLoadingSample(true);
     try {
       const response = await resumeApi.loadSampleResume();
       onShowToast('Loaded and analyzed sample student resume!', 'success');
@@ -91,7 +92,7 @@ export const ResumeAnalyzerPage: React.FC<ResumeAnalyzerPageProps> = ({
       const msg = err.response?.data?.detail || (err.code === 'ECONNABORTED' ? 'AI server is warming up. Please try again in a few moments.' : 'Failed to load sample resume.');
       onShowToast(msg, 'error');
     } finally {
-      setIsUploading(false);
+      setIsLoadingSample(false);
     }
   };
 
@@ -134,7 +135,8 @@ export const ResumeAnalyzerPage: React.FC<ResumeAnalyzerPageProps> = ({
             variant="outline"
             size="sm"
             onClick={handleLoadSample}
-            isLoading={isUploading}
+            isLoading={isLoadingSample}
+            disabled={isUploadingPdf || isLoadingSample}
             leftIcon={<Sparkles className="w-4 h-4 text-amber-500" />}
           >
             Load Sample Resume
@@ -144,7 +146,8 @@ export const ResumeAnalyzerPage: React.FC<ResumeAnalyzerPageProps> = ({
             variant="primary"
             size="sm"
             onClick={() => fileInputRef.current?.click()}
-            isLoading={isUploading}
+            isLoading={isUploadingPdf}
+            disabled={isUploadingPdf || isLoadingSample}
             leftIcon={<UploadCloud className="w-4 h-4" />}
           >
             Upload PDF
@@ -181,10 +184,19 @@ export const ResumeAnalyzerPage: React.FC<ResumeAnalyzerPageProps> = ({
             Supports standard PDF format up to 10MB. Or click to select from your files.
           </p>
           <div className="mt-6 flex gap-3">
-            <Button size="sm" variant="primary">Select PDF File</Button>
+            <Button
+              size="sm"
+              variant="primary"
+              isLoading={isUploadingPdf}
+              disabled={isUploadingPdf || isLoadingSample}
+            >
+              Select PDF File
+            </Button>
             <Button
               size="sm"
               variant="outline"
+              isLoading={isLoadingSample}
+              disabled={isUploadingPdf || isLoadingSample}
               onClick={(e) => {
                 e.stopPropagation();
                 handleLoadSample();

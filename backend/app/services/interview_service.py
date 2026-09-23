@@ -325,7 +325,7 @@ class InterviewService:
         """
         import random
         
-        # Comprehensive curated question catalog across 11 key engineering courses
+        # Comprehensive curated question catalog across 10 key engineering domains (60+ questions)
         course_catalog = {
             "Frontend": [
                 {
@@ -357,6 +357,36 @@ class InterviewService:
                         "useMemo/useCallback memoization trade-offs"
                     ],
                     "model_answer_outline": "Explain that function components re-run on every render. Omitting dependencies leads to stale closures. Provide an example of using AbortController inside useEffect return cleanup."
+                },
+                {
+                    "question": "Explain how the Browser Event Loop processes Microtasks (Promises, MutationObserver) versus Macrotasks (setTimeout, UI rendering).",
+                    "why_asked": "Tests deep JavaScript asynchronous runtime understanding and rendering jank prevention.",
+                    "key_talking_points": [
+                        "Call stack must be completely empty before event loop processes task queues",
+                        "Microtask queue is drained to completion between each individual macrotask",
+                        "How long-running synchronous scripts starve the rendering queue and cause dropped frames"
+                    ],
+                    "model_answer_outline": "Detail the order: Synchronous call stack -> Microtasks queue (all drained) -> Render/Paint -> Single Macrotask -> Repeat. Explain that Promise.then() runs before setTimeout(..., 0)."
+                },
+                {
+                    "question": "How do CSS specificity, cascading rules, and the box-sizing property ('border-box' vs 'content-box') impact responsive layouts?",
+                    "why_asked": "Tests core styling fundamentals, layout calculation math, and defensive CSS architecture.",
+                    "key_talking_points": [
+                        "Specificity weights: Inline styles (1000) > IDs (100) > Classes/attributes (10) > Elements (1)",
+                        "border-box includes padding and border within the declared width/height",
+                        "Modern responsive design using clamp(), flex-grow, and CSS Grid fractional units"
+                    ],
+                    "model_answer_outline": "Explain that content-box adds padding to declared dimensions, causing unexpected layout overflows. Specificity conflicts should be resolved with semantic structure rather than !important hacks."
+                },
+                {
+                    "question": "How do you manage complex asynchronous state and cache invalidation in React using TanStack React Query or Redux Toolkit?",
+                    "why_asked": "Evaluates practical scalable state architecture beyond basic useState.",
+                    "key_talking_points": [
+                        "Separation of Server State (caching, deduping, background refetching) vs Client UI State",
+                        "Optimistic UI updates for immediate perceived user responsiveness",
+                        "Query key hierarchies for granular cache invalidation upon mutation"
+                    ],
+                    "model_answer_outline": "Contrast server state with client state. Server state is asynchronous, remote, and owned by other consumers. Explain using invalidateQueries(['resumes', userId]) after a successful POST mutation."
                 }
             ],
             "Backend": [
@@ -389,6 +419,36 @@ class InterviewService:
                         "Distributed transactions: Saga pattern vs Two-Phase Commit (2PC)"
                     ],
                     "model_answer_outline": "State that early-stage products should start as modular monoliths. Microservices introduce network serialization, partial failure, distributed tracing, and eventual consistency challenges."
+                },
+                {
+                    "question": "How do you handle database connection pooling, connection starvation, and connection leaks in high-throughput backend services?",
+                    "why_asked": "Examines database infrastructure resilience and resource lifecycle management under heavy concurrency.",
+                    "key_talking_points": [
+                        "Connection overhead: TCP handshake, TLS negotiation, authentication memory per backend worker",
+                        "Pool sizing formulas (e.g. connections = (cores * 2) + disk_spindle_effective_count)",
+                        "Context managers / RAII patterns to guarantee connection release back to pool even on uncaught exceptions"
+                    ],
+                    "model_answer_outline": "Explain that database connections consume significant RAM and thread capacity. Over-allocating connections causes thread thrashing. Use bounded pools (e.g. SQLAlchemy QueuePool, HikariCP) and short checkout timeouts."
+                },
+                {
+                    "question": "Compare RESTful APIs, GraphQL, and gRPC with Protocol Buffers. In what scenarios is gRPC preferable over JSON REST?",
+                    "why_asked": "Tests API communication protocol selection based on network constraints and payload sizes.",
+                    "key_talking_points": [
+                        "gRPC: binary HTTP/2 multiplexing, strongly-typed protobuf schemas, bi-directional streaming",
+                        "REST: universally accessible, stateless, standard HTTP verbs and status codes",
+                        "GraphQL: solves over-fetching and under-fetching, client-driven field selection"
+                    ],
+                    "model_answer_outline": "Use gRPC for high-performance internal microservice communication due to compact binary serialization and low latency. Use REST for public-facing client APIs for browser compatibility."
+                },
+                {
+                    "question": "How do you ensure idempotency for payment gateways or critical POST requests using Idempotency Keys and Redis distributed locks?",
+                    "why_asked": "Tests distributed transactional correctness and defense against duplicate network retries.",
+                    "key_talking_points": [
+                        "Client generates unique UUID Idempotency-Key in HTTP header",
+                        "Server checks Redis cache before processing: return cached result if already completed",
+                        "Atomic SETNX distributed lock with TTL to prevent concurrent duplicate processing during execution"
+                    ],
+                    "model_answer_outline": "Walk through checking Redis for the idempotency key. If processing, return 409 Conflict or wait; if cached, return stored response payload; if new, acquire lock, execute transaction, store result, release lock."
                 }
             ],
             "Python": [
@@ -421,6 +481,36 @@ class InterviewService:
                         "Generational GC (Gen 0, 1, 2) based on the weak generational hypothesis"
                     ],
                     "model_answer_outline": "Detail that every PyObject has `ob_refcnt`. When circular references occur (e.g. node.parent = parent), the cyclic GC periodically runs heuristic graph cycle detection across generations."
+                },
+                {
+                    "question": "How do Python decorators and `functools.wraps` work under the hood? Write an example of a caching or performance timing decorator.",
+                    "why_asked": "Evaluates functional programming concepts, closures, and metaprogramming in Python.",
+                    "key_talking_points": [
+                        "Decorators are higher-order functions accepting a callable and returning a wrapper function",
+                        "functools.wraps copies function metadata (__name__, __doc__, __annotations__) to preserve introspection",
+                        "*args and **kwargs unpacking for universal argument forwarding"
+                    ],
+                    "model_answer_outline": "Explain that `@decorator` is syntactic sugar for `func = decorator(func)`. Provide a code sketch tracking `time.perf_counter()` before and after calling `func(*args, **kwargs)`."
+                },
+                {
+                    "question": "What are Python dataclasses, `__slots__`, and namedtuples? How does `__slots__` reduce memory consumption in millions of objects?",
+                    "why_asked": "Tests Pythonic data modeling and high-scale memory optimization techniques.",
+                    "key_talking_points": [
+                        "Standard classes use a dynamic __dict__ dictionary to store instance attributes",
+                        "__slots__ replaces __dict__ with a fixed-size C-level array of pointers",
+                        "Dataclasses automatically generate boilerplate (__init__, __repr__, __eq__) with optional slots=True"
+                    ],
+                    "model_answer_outline": "Explain that default Python objects have ~150-200 bytes overhead due to __dict__. Using `__slots__ = ('x', 'y')` drops memory per object by ~60%, critical when instantiating millions of records."
+                },
+                {
+                    "question": "Explain Python's Method Resolution Order (MRO) and the C3 linearization algorithm in multiple inheritance.",
+                    "why_asked": "Tests advanced object-oriented mechanics and the 'diamond problem' resolution.",
+                    "key_talking_points": [
+                        "Diamond problem: Class D inherits from B and C, which both inherit from A",
+                        "C3 linearization preserves local precedence order and monotonicity",
+                        "Calling super() delegates dynamically along the computed MRO list"
+                    ],
+                    "model_answer_outline": "Explain that Python computes MRO using C3 linearization. You can inspect it with `Class.__mro__`. Using `super()` ensures cooperative multiple inheritance where each parent method is called exactly once."
                 }
             ],
             "AI/ML": [
@@ -453,6 +543,36 @@ class InterviewService:
                         "Early stopping with patience and model checkpointing"
                     ],
                     "model_answer_outline": "If validation loss diverges while training loss decreases, the model is overfitting (high variance). Remediate with dropout, weight decay, early stopping, and data augmentation. If both losses plateau high, increase model capacity."
+                },
+                {
+                    "question": "How does Retrieval-Augmented Generation (RAG) work? Compare dense vector embeddings (cosine similarity) with hybrid BM25 lexical search.",
+                    "why_asked": "Crucial contemporary GenAI concept tested in modern AI/ML engineer interviews.",
+                    "key_talking_points": [
+                        "RAG pipeline: Document chunking -> Embedding generation -> Vector indexing -> Similarity retrieval -> LLM context augmentation",
+                        "Dense retrieval (vector embeddings) captures semantic intent and synonyms",
+                        "Sparse retrieval (BM25) excels at exact keyword matching (SKUs, IDs, medical codes); Hybrid search combines both with Reciprocal Rank Fusion"
+                    ],
+                    "model_answer_outline": "Walk through chunking strategies, embedding generation, vector DB querying (HNSW index), and feeding retrieved top-k context into system prompt. Explain why hybrid search outperforms pure dense vectors."
+                },
+                {
+                    "question": "How do you evaluate and remediate severe class imbalance in machine learning models?",
+                    "why_asked": "Examines practical data science competence on real-world skewed distributions (fraud, churn, disease).",
+                    "key_talking_points": [
+                        "Why raw accuracy is misleading on a 99:1 imbalanced dataset",
+                        "Evaluation metrics: Precision, Recall, F1-Score, PR-AUC vs ROC-AUC",
+                        "Remediation techniques: SMOTE oversampling, Class-weighted cross entropy, Focal Loss"
+                    ],
+                    "model_answer_outline": "Never rely on accuracy alone. Explain that PR-AUC is superior to ROC-AUC when positive classes are scarce. Use cost-sensitive learning (loss weighting) and adjust decision probability thresholds."
+                },
+                {
+                    "question": "Explain Parameter-Efficient Fine-Tuning (PEFT) and Low-Rank Adaptation (LoRA) for LLM fine-tuning.",
+                    "why_asked": "Validates cutting-edge LLM engineering proficiency and GPU compute cost awareness.",
+                    "key_talking_points": [
+                        "Full fine-tuning requires updating billions of weights and massive GPU VRAM",
+                        "LoRA freezes base model weights and injects trainable rank-decomposition matrices A and B (W = W_0 + B * A)",
+                        "Drastically reduces trainable parameters by 99% while achieving comparable task adaptation"
+                    ],
+                    "model_answer_outline": "Explain that weight update matrices have low intrinsic rank. LoRA decomposes weight deltas into two low-rank matrices (d x r and r x k, where r << d), enabling fine-tuning on consumer-grade GPUs."
                 }
             ],
             "DSA": [
@@ -485,6 +605,36 @@ class InterviewService:
                         "Red-Black Tree invariants: black height equality and no two consecutive red nodes"
                     ],
                     "model_answer_outline": "Explain that standard BSTs degenerate on sorted input. Self-balancing trees enforce height balance invariants through local tree rotations during inserts and deletes, keeping height bounded to O(log n)."
+                },
+                {
+                    "question": "How would you design and implement an LRU (Least Recently Used) Cache with O(1) time complexity for both get and put operations?",
+                    "why_asked": "Extremely frequent tech interview question testing composite data structure composition.",
+                    "key_talking_points": [
+                        "Hash Map for O(1) key-to-node lookup",
+                        "Doubly Linked List for O(1) node deletion and insertion at the head (most recently used)",
+                        "Eviction mechanics: remove tail node when cache capacity is exceeded"
+                    ],
+                    "model_answer_outline": "Explain why array or singly linked list fails O(1) removal. Combine a Hash Map with a Doubly Linked List with dummy head and tail sentinel nodes to eliminate edge-case null pointer checks."
+                },
+                {
+                    "question": "Explain the Two-Pointer and Sliding Window techniques. When would you use a variable-length window versus a fixed-length window?",
+                    "why_asked": "Tests array optimization patterns that reduce O(n²) brute force solutions to O(n) linear scans.",
+                    "key_talking_points": [
+                        "Fixed window: subarray of exact length k (e.g. max sum subarray of size k)",
+                        "Variable window: expand right pointer until constraint is violated, shrink left pointer until valid again",
+                        "Monotonic deque variation for sliding window maximum in O(n)"
+                    ],
+                    "model_answer_outline": "Explain that both pointers advance at most n steps, guaranteeing O(n) amortized time. Give examples: Longest Substring Without Repeating Characters (variable) vs Maximum Sum Subarray of Size K (fixed)."
+                },
+                {
+                    "question": "How does the Trie (Prefix Tree) data structure work? Compare its search complexity against a Hash Table for string prefix queries.",
+                    "why_asked": "Evaluates string processing data structures, autocomplete search, and prefix matching.",
+                    "key_talking_points": [
+                        "Each node contains an array or map of child character pointers and an is_end_of_word boolean flag",
+                        "Prefix search takes O(L) where L is the prefix string length, independent of total words stored (N)",
+                        "Space complexity optimization using Radix / Patricia Tries"
+                    ],
+                    "model_answer_outline": "Hash tables have O(L) average lookup but cannot efficiently answer 'find all words with prefix pre'. Tries traverse along character branches in O(L) and easily collect all downstream completions."
                 }
             ],
             "Databases": [
@@ -517,6 +667,36 @@ class InterviewService:
                         "Data access patterns driving document denormalization"
                     ],
                     "model_answer_outline": "Choose PostgreSQL for financial/transactional systems requiring strict referential integrity. Choose NoSQL for high-write velocity or variable document structures where data can be embedded in single atomic documents."
+                },
+                {
+                    "question": "What is the N+1 query problem in Object-Relational Mappers (ORMs), and how do you detect and resolve it?",
+                    "why_asked": "Frequent real-world performance trap in web applications using Hibernate, SQLAlchemy, or Prisma.",
+                    "key_talking_points": [
+                        "Occurs when fetching 1 parent record causes N separate individual database queries for each child relation",
+                        "Detection: query profiling logs or database slow query logs showing identical queries with varying IDs",
+                        "Resolution: Eager loading with JOIN (joinedload in SQLAlchemy, select_related/prefetch_related in Django)"
+                    ],
+                    "model_answer_outline": "Illustrate fetching 50 students, then executing 50 individual queries to fetch their courses. Explain how joinedload executes a single JOIN query, reducing database roundtrips from 51 to 1."
+                },
+                {
+                    "question": "How does Database Sharding differ from Database Partitioning and Read-Replication? How do you handle cross-shard queries?",
+                    "why_asked": "Tests advanced horizontal scaling concepts and distributed data partitioning.",
+                    "key_talking_points": [
+                        "Read-Replication: copies data across read replicas to scale read operations; writes still bottleneck on primary",
+                        "Sharding: splits rows horizontally across independent physical database servers using a shard key",
+                        "Cross-shard joins: expensive scatter-gather operations; mitigated by careful shard key selection"
+                    ],
+                    "model_answer_outline": "Replication scales reads. Sharding scales both writes and storage across multiple nodes. Shard by entity (e.g. tenant_id or user_id) so 95% of queries execute within a single shard."
+                },
+                {
+                    "question": "Explain Write-Ahead Logging (WAL) and how relational databases ensure Durability even during sudden power failure.",
+                    "why_asked": "Tests low-level storage engine mechanics and crash recovery algorithms (ARIES).",
+                    "key_talking_points": [
+                        "Changes are appended sequentially to the WAL file on disk before in-memory buffer pages are modified",
+                        "Sequential disk writes are orders of magnitude faster than random disk page flushes",
+                        "Crash recovery: redo logged transactions from the last checkpoint; undo uncommitted transactions"
+                    ],
+                    "model_answer_outline": "Databases write to the append-only WAL before modifying table pages. On sudden crash, during restart the engine reads the WAL from the last checkpoint, replays committed transactions, and rolls back incomplete ones."
                 }
             ],
             "DevOps & Cloud": [
@@ -539,6 +719,46 @@ class InterviewService:
                         "HPA queries Metrics Server to autoscale pod replicas based on CPU or custom Prometheus metrics"
                     ],
                     "model_answer_outline": "Liveness probes trigger container restarts if unhealthy; readiness probes gate traffic until initialized. Rolling updates gradually replace old ReplicaSet pods with new pods to guarantee zero downtime."
+                },
+                {
+                    "question": "Compare Blue-Green Deployments, Canary Releases, and Rolling Updates. What are the rollback trade-offs?",
+                    "why_asked": "Tests production deployment strategies, risk mitigation, and traffic routing mechanisms.",
+                    "key_talking_points": [
+                        "Blue-Green: two identical environments; instant router switch; instant rollback by flipping back",
+                        "Canary: route 5-10% of real user traffic to new version; monitor telemetry/errors before full rollout",
+                        "Database schema migrations: backward compatibility (expand and contract pattern) is essential"
+                    ],
+                    "model_answer_outline": "Blue-Green costs double infrastructure but offers instant rollback. Canary tests real production traffic with minimal blast radius. Rolling updates minimize idle servers but require backward-compatible APIs."
+                },
+                {
+                    "question": "What is Infrastructure as Code (IaC) with Terraform? Explain state locking, drift detection, and declarative vs imperative workflows.",
+                    "why_asked": "Tests modern cloud provisioning, reproducible environments, and configuration management.",
+                    "key_talking_points": [
+                        "Declarative (Terraform HCL: declare desired end-state) vs Imperative (scripts: step-by-step commands)",
+                        "terraform.tfstate tracks real cloud resource IDs mapped to configuration code",
+                        "State locking (using DynamoDB/GCS) prevents concurrent modifications and race conditions"
+                    ],
+                    "model_answer_outline": "IaC version-controls infrastructure in git. Terraform computes execution plans (`terraform plan`) showing additions, modifications, and deletions. Drift detection highlights manual cloud console changes."
+                },
+                {
+                    "question": "How do Reverse Proxies (Nginx, Envoy) differ from API Gateways (Kong, AWS API Gateway)? What responsibilities belong to each?",
+                    "why_asked": "Assesses edge networking, routing architecture, and traffic ingress patterns.",
+                    "key_talking_points": [
+                        "Reverse Proxy: Layer 4/Layer 7 routing, SSL termination, static file caching, TCP load balancing",
+                        "API Gateway: Centralized auth validation, rate limiting, request transformation, telemetry, API key management",
+                        "Service Mesh (Envoy/Istio) handling east-west internal microservice traffic"
+                    ],
+                    "model_answer_outline": "A reverse proxy handles traffic routing and SSL termination. An API Gateway adds higher-level business logic: JWT validation, quota rate-limiting, and developer portal documentation."
+                },
+                {
+                    "question": "How do you architect a secure CI/CD pipeline in GitHub Actions or GitLab CI to prevent secret exfiltration and dependency vulnerabilities?",
+                    "why_asked": "Tests DevSecOps best practices and supply chain security awareness.",
+                    "key_talking_points": [
+                        "OIDC (OpenID Connect) for short-lived cloud credentials instead of hardcoded long-lived API keys",
+                        "Automated dependency scanning (Dependabot / Snyk) and static application security testing (SAST)",
+                        "Least privilege workflow permissions (`permissions: read-all` by default)"
+                    ],
+                    "model_answer_outline": "Never commit secrets. Use GitHub Secrets with OIDC tokens that expire in minutes. Run SAST tools and container vulnerability scans before artifacts are pushed to production registries."
                 }
             ],
             "System Design": [
@@ -561,6 +781,46 @@ class InterviewService:
                         "Vector clocks and read repair for resolving conflicting concurrent writes"
                     ],
                     "model_answer_outline": "Networks will experience partitions, so systems must choose CP (refuse writes to maintain consistency) or AP (accept writes with eventual consistency). Tunable databases allow configuring read/write quorum."
+                },
+                {
+                    "question": "Design a real-time Chat System (like WhatsApp or Slack). How do WebSockets, message brokers (Kafka/RabbitMQ), and Redis Pub/Sub scale across servers?",
+                    "why_asked": "Tests persistent bidirectional connection management, message ordering, and push delivery.",
+                    "key_talking_points": [
+                        "WebSocket servers maintain persistent stateful connections with connected mobile/web clients",
+                        "Redis Pub/Sub or Kafka routes messages across distributed WebSocket servers to reach recipient's active socket",
+                        "Offline messaging: messages written to database (Cassandra / HBase / DynamoDB) and delivered via APNs / FCM push"
+                    ],
+                    "model_answer_outline": "Walk through client socket handshake -> API Gateway -> Chat Service. Use Redis cluster to store user-to-server mapping. When User A messages User B, lookup B's server and publish across Redis Pub/Sub."
+                },
+                {
+                    "question": "How do you design a distributed unique ID generator (like Twitter Snowflake) that creates sortable 64-bit IDs across multiple data centers?",
+                    "why_asked": "Tests distributed coordination without single-point-of-failure bottlenecks.",
+                    "key_talking_points": [
+                        "Snowflake 64-bit composition: 1 unused sign bit + 41-bit millisecond timestamp + 10-bit datacenter/machine ID + 12-bit sequence number",
+                        "Time-ordered sortability without requiring cross-node distributed locks or database auto-increments",
+                        "Clock skew mitigation (NTP sync checks and rejection if system clock moves backwards)"
+                    ],
+                    "model_answer_outline": "Detail Snowflake bit allocation. 41 timestamp bits provide 69 years of IDs; 10 machine bits support 1024 servers; 12 sequence bits support 4096 IDs per millisecond per machine (~4 million IDs/sec/node)."
+                },
+                {
+                    "question": "Design a scalable Notification Service supporting Email, SMS, and Push notifications with rate limits and priority queues.",
+                    "why_asked": "Evaluates asynchronous processing, third-party provider integration, and fault tolerance.",
+                    "key_talking_points": [
+                        "Queue priority: Critical (OTP passwords, fraud alerts) vs Promotional (marketing digests)",
+                        "Third-party provider fallbacks (Twilio primary -> MessageBird fallback on 5xx errors)",
+                        "User notification preference settings and deduplication windows"
+                    ],
+                    "model_answer_outline": "Use message queues (RabbitMQ/Kafka) with dedicated worker pools per channel (Email, SMS, Push). Implement exponential backoff retries with dead-letter queues (DLQ) for permanent delivery failures."
+                },
+                {
+                    "question": "How does Content Delivery Network (CDN) edge caching work, and what are the cache invalidation strategies (TTL vs Cache Purge)?",
+                    "why_asked": "Tests edge networking, latency reduction, and web asset caching strategies.",
+                    "key_talking_points": [
+                        "Anycast DNS routes users to the geographically nearest Point of Presence (PoP)",
+                        "Cache-Control headers (max-age, s-maxage, stale-while-revalidate)",
+                        "Cache busting with content hashes (app.a1b2c3.js) vs API purge requests"
+                    ],
+                    "model_answer_outline": "Static assets should use immutable content hashing with 1-year max-age. For dynamic HTML/APIs, use stale-while-revalidate to serve cached data instantly while asynchronously revalidating from the origin server."
                 }
             ],
             "Java & OOP": [
@@ -583,6 +843,46 @@ class InterviewService:
                         "Major/Full GC (Mark-Sweep-Compact / G1 / ZGC) collects Old Gen with stop-the-world pauses"
                     ],
                     "model_answer_outline": "Explain that most objects die young. Minor GC quickly reclaims Eden space. Objects that survive survivor cycles are promoted to Old Gen, which requires generational collectors like G1 or ZGC to minimize pauses."
+                },
+                {
+                    "question": "How does `ConcurrentHashMap` achieve high concurrency without locking the entire map like `Hashtable`? Explain CAS and synchronized buckets.",
+                    "why_asked": "Tests high-performance concurrency algorithms in Java.",
+                    "key_talking_points": [
+                        "Java 7 used Segment-based lock striping (ReentrantLock on 16 segments)",
+                        "Java 8+ uses Compare-And-Swap (CAS) for empty bucket insertion and locks only the specific bucket head node",
+                        "Bins transform into Red-Black Trees when collision bucket size exceeds 8 (TREEIFY_THRESHOLD)"
+                    ],
+                    "model_answer_outline": "Hashtable synchronizes every method, causing thread contention. ConcurrentHashMap locks only individual bucket nodes during write conflicts, allowing concurrent reads without locking via volatile node references."
+                },
+                {
+                    "question": "Explain Java's Memory Model (JMM) and the `volatile` keyword. How does it prevent instruction reordering?",
+                    "why_asked": "Examines understanding of hardware CPU caches, visibility, and multithreaded race conditions.",
+                    "key_talking_points": [
+                        "Without volatile, CPU cores cache variable values in L1/L2 registers, causing stale reads across threads",
+                        "volatile establishes a Happens-Before relationship and inserts Memory Barriers (fences)",
+                        "volatile guarantees visibility but NOT atomicity (count++ still requires AtomicInteger)"
+                    ],
+                    "model_answer_outline": "Volatile instructs the compiler and CPU not to reorder instructions around the variable and ensures all writes are immediately flushed to main memory and visible to all other threads."
+                },
+                {
+                    "question": "Compare Abstract Classes versus Interfaces in Java 8 and beyond. When should you choose one over the other?",
+                    "why_asked": "Evaluates architecture design judgment and understanding of modern Java feature evolution.",
+                    "key_talking_points": [
+                        "Interfaces support multiple inheritance of type; classes can only extend single abstract class",
+                        "Abstract classes can maintain instance state (fields) and non-public constructors",
+                        "Java 8 added default and static methods to interfaces; Java 9 added private interface helper methods"
+                    ],
+                    "model_answer_outline": "Use an interface when defining a contract/capability shared by disparate classes (e.g. Comparable, AutoCloseable). Use an abstract class when sharing core state and template method implementations across closely related subclasses."
+                },
+                {
+                    "question": "How do Java Streams work lazily under the hood? What are the performance hazards of `parallelStream()`?",
+                    "why_asked": "Tests functional programming efficiency in Java and thread pool resource starvation.",
+                    "key_talking_points": [
+                        "Streams construct an execution pipeline (filter, map) that does zero computation until a terminal operation (collect, findFirst) executes",
+                        "parallelStream() shares the common ForkJoinPool across the entire JVM",
+                        "Blocking I/O operations inside parallelStream can starve the entire JVM's common thread pool"
+                    ],
+                    "model_answer_outline": "Streams are lazy: intermediate operations return a new Stream stage without processing elements until a terminal operator pulls data through. Never run blocking I/O in parallelStream; use custom thread pools instead."
                 }
             ],
             "Behavioral": [
@@ -605,6 +905,46 @@ class InterviewService:
                         "Committing fully to the team's chosen path once a decision was made (Disagree and Commit)"
                     ],
                     "model_answer_outline": "Explain the technical divergence (e.g. database choice or API contract), how you ran a benchmark to compare latencies, listened to their perspective on maintainability, and achieved consensus."
+                },
+                {
+                    "question": "Describe a situation where a project you were working on failed or had a major bug in production. What went wrong, and what did you learn?",
+                    "why_asked": "Tests accountability, self-reflection, and blameless post-mortem culture.",
+                    "key_talking_points": [
+                        "Take direct responsibility without blaming team members, tools, or dependencies",
+                        "Immediate containment action: rollback, hotfix, or graceful feature flag disablement",
+                        "Preventative systemic fixes: adding unit/integration tests, automated linting, or CI/CD gates"
+                    ],
+                    "model_answer_outline": "Describe the outage concisely. Detail how you rolled back to stabilize users, conducted a blameless post-mortem, identified the gap in test coverage, and added an automated test suite to prevent recurrence."
+                },
+                {
+                    "question": "Tell me about a time you had to learn an unfamiliar programming language, framework, or technology stack in a very tight timeframe.",
+                    "why_asked": "Evaluates rapid learning agility, curiosity, and proactive resourcefulness.",
+                    "key_talking_points": [
+                        "Structured learning approach: building a minimal proof-of-concept instead of passive video watching",
+                        "Identifying transferable patterns from existing familiar tech stacks",
+                        "Delivering the production assignment on time with idiomatic conventions"
+                    ],
+                    "model_answer_outline": "Explain the sudden requirement. Detail how you studied official docs, built a weekend sandbox prototype to understand state/lifecycle, consulted senior code reviews, and shipped the project successfully."
+                },
+                {
+                    "question": "Give an example of a technical decision you made that you later regretted. What would you do differently with the knowledge you have today?",
+                    "why_asked": "Examines intellectual growth, technical maturity, and learning from experience.",
+                    "key_talking_points": [
+                        "Premature optimization or choosing complex new tech over boring reliable tools",
+                        "Recognizing maintenance burdens, code complexity, or onboarding difficulty",
+                        "The principle of choosing the simplest solution that meets the current requirements"
+                    ],
+                    "model_answer_outline": "Explain an architectural choice (e.g. over-engineering microservices for a 100-user app). Acknowledge that a modular monolith would have saved weeks of debugging, and express how this shaped your pragmatic design philosophy."
+                },
+                {
+                    "question": "How do you prioritize competing deadlines when you have multiple engineering tasks, academic coursework, and interview preparation simultaneously?",
+                    "why_asked": "Assesses time management, executive function, and working under pressure.",
+                    "key_talking_points": [
+                        "Eisenhower Matrix: urgent vs important categorization",
+                        "Time-blocking dedicated uninterrupted deep work sessions",
+                        "Proactive communication with mentors/professors before deadlines slip"
+                    ],
+                    "model_answer_outline": "Explain your daily planning routine. Describe how you break projects into small discrete deliverables, protect uninterrupted study blocks, and communicate early if priorities need realignment."
                 }
             ]
         }
@@ -666,19 +1006,18 @@ class InterviewService:
                 })
                 qid += 1
 
-        # 2. Select questions from course catalog
+        # 2. Select questions from course catalog with genuine variety on refresh
         selected_courses = [category] if (category and category != "All" and category in course_catalog) else list(course_catalog.keys())
-        
-        # When force_refresh is requested or by default, randomize within each course
+
         for course in selected_courses:
             pool = list(course_catalog[course])
-            if force_refresh:
-                random.shuffle(pool)
-            
-            # Take 2-3 questions per course to ensure rich content
-            sample_size = min(3, len(pool)) if (category and category != "All") else min(2, len(pool))
+            # Randomize order so every regeneration produces fresh questions
+            random.shuffle(pool)
+
+            # Sample 4-6 questions if viewing single category, 2-3 if viewing All
+            sample_size = min(6, len(pool)) if (category and category != "All") else min(3, len(pool))
             chosen = pool[:sample_size]
-            
+
             for q in chosen:
                 items.append({
                     "id": qid,
