@@ -1,4 +1,5 @@
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Set
+import re
 from app.services.ai_service import ai_service
 
 # Standard industry benchmarks for college students / entry-level roles
@@ -894,32 +895,308 @@ ROLE_SKILL_PROFILES: Dict[str, Dict[str, Any]] = {
                 ]
             }
         ]
+    },
+    "Cloud/DevOps Engineer": {
+        "required_skills": [
+            "Linux & Bash", "Docker", "Kubernetes", "CI/CD", "AWS", "Terraform",
+            "Git", "Python", "Networking & Security", "Monitoring & Logging"
+        ],
+        "default_phases": [
+            {
+                "phase_number": 1,
+                "phase_name": "Phase 1 — Linux, Shell & Networking Fundamentals",
+                "items": [
+                    {
+                        "skill_name": "Linux CLI, Process Control & Bash Scripting",
+                        "priority": "High",
+                        "difficulty": "Beginner",
+                        "estimated_hours": 20,
+                        "prerequisites": ["Basic Computing"],
+                        "project_idea": "Author automated backup, log rotation, and server health check bash scripts."
+                    },
+                    {
+                        "skill_name": "TCP/IP, DNS, SSL/TLS & Networking Security",
+                        "priority": "High",
+                        "difficulty": "Beginner",
+                        "estimated_hours": 15,
+                        "prerequisites": ["Linux CLI"],
+                        "project_idea": "Configure a reverse proxy with Nginx, custom SSL certificates, and firewall rules."
+                    }
+                ]
+            },
+            {
+                "phase_number": 2,
+                "phase_name": "Phase 2 — Containerization with Docker & Compose",
+                "items": [
+                    {
+                        "skill_name": "Docker Architecture, Multi-Stage Builds & Optimization",
+                        "priority": "High",
+                        "difficulty": "Intermediate",
+                        "estimated_hours": 25,
+                        "prerequisites": ["Linux CLI"],
+                        "project_idea": "Containerize a microservices app (frontend, backend, database, redis) with minimal image footprints."
+                    }
+                ]
+            },
+            {
+                "phase_number": 3,
+                "phase_name": "Phase 3 — Kubernetes Container Orchestration",
+                "items": [
+                    {
+                        "skill_name": "Kubernetes Pods, Deployments, Services & Ingress",
+                        "priority": "High",
+                        "difficulty": "Intermediate",
+                        "estimated_hours": 30,
+                        "prerequisites": ["Docker"],
+                        "project_idea": "Deploy a resilient, auto-scaling web application on a local k3s/Minikube cluster with ConfigMaps and Secrets."
+                    }
+                ]
+            },
+            {
+                "phase_number": 4,
+                "phase_name": "Phase 4 — Cloud Infrastructure & Terraform (IaC)",
+                "items": [
+                    {
+                        "skill_name": "AWS Core Services (VPC, EC2, S3, RDS, IAM)",
+                        "priority": "High",
+                        "difficulty": "Intermediate",
+                        "estimated_hours": 25,
+                        "prerequisites": ["Networking"],
+                        "project_idea": "Provision a multi-AZ VPC architecture with public and private subnets and NAT gateways."
+                    },
+                    {
+                        "skill_name": "Infrastructure as Code (IaC) with Terraform",
+                        "priority": "High",
+                        "difficulty": "Intermediate",
+                        "estimated_hours": 25,
+                        "prerequisites": ["AWS"],
+                        "project_idea": "Write modular Terraform manifests to provision an entire cloud staging environment with remote state locking."
+                    }
+                ]
+            },
+            {
+                "phase_number": 5,
+                "phase_name": "Phase 5 — CI/CD Automation & Observability",
+                "items": [
+                    {
+                        "skill_name": "Automated GitHub Actions CI/CD Pipeline",
+                        "priority": "High",
+                        "difficulty": "Advanced",
+                        "estimated_hours": 25,
+                        "prerequisites": ["Git", "Docker", "Terraform"],
+                        "project_idea": "Build a zero-downtime deployment pipeline that runs tests, builds Docker images, and deploys to Kubernetes."
+                    },
+                    {
+                        "skill_name": "Prometheus Metrics & Grafana Dashboards",
+                        "priority": "High",
+                        "difficulty": "Intermediate",
+                        "estimated_hours": 20,
+                        "prerequisites": ["Kubernetes"],
+                        "project_idea": "Set up full cluster monitoring with Prometheus and alert triggers to Discord/Slack on high error rates."
+                    }
+                ]
+            }
+        ]
     }
 }
+
+ROLE_ALIASES: Dict[str, str] = {
+    "cloud/devops engineer": "Cloud/DevOps Engineer",
+    "cloud / devops engineer": "Cloud/DevOps Engineer",
+    "cloud engineer": "Cloud/DevOps Engineer",
+    "devops engineer": "Cloud/DevOps Engineer",
+    "devops": "Cloud/DevOps Engineer",
+    "frontend developer": "Frontend Engineer",
+    "frontend engineer": "Frontend Engineer",
+    "frontend": "Frontend Engineer",
+    "backend developer": "Backend Developer",
+    "backend engineer": "Backend Developer",
+    "backend": "Backend Developer",
+    "full stack developer": "Full Stack Developer",
+    "fullstack developer": "Full Stack Developer",
+    "full-stack developer": "Full Stack Developer",
+    "full stack engineer": "Full Stack Developer",
+    "ai/ml engineer": "AI/ML Engineer",
+    "machine learning engineer": "AI/ML Engineer",
+    "ai engineer": "AI/ML Engineer",
+    "ml engineer": "AI/ML Engineer",
+    "software developer": "Software Developer",
+    "software engineer": "Software Developer",
+    "swe": "Software Developer",
+    "data analyst": "Data Analyst",
+    "data scientist": "Data Scientist",
+    "cybersecurity analyst": "Cybersecurity Analyst",
+    "mobile app developer": "Mobile App Developer",
+    "mobile developer": "Mobile App Developer",
+}
+
+COMPETENCY_SATISFACTIONS: Dict[str, Set[str]] = {
+    # Core Computer Science
+    "data structures & algorithms": {
+        "data structures & algorithms", "data structures and algorithms",
+        "data structures", "algorithms", "dsa", "leetcode", "problem solving",
+        "trees & graphs", "dynamic programming"
+    },
+    "system design": {
+        "system design", "distributed systems", "software architecture",
+        "microservices", "high availability", "scalability"
+    },
+    "object-oriented programming": {
+        "oop", "object-oriented programming", "object oriented programming", "design patterns"
+    },
+
+    # Languages
+    "python": {"python", "python3", "python 3", "py"},
+    "javascript": {"javascript", "js", "typescript", "es6"},
+    "typescript": {"typescript", "ts"},
+    "java": {"java", "core java"},
+    "c++": {"c++", "cpp", "modern c++"},
+    "c#": {"c#", "c-sharp", "c sharp", ".net", "dotnet"},
+    "go": {"go", "golang"},
+    "sql": {
+        "sql", "postgresql", "postgres", "mysql", "sqlite", "mariadb",
+        "oracle db", "sql server", "relational database", "relational databases", "sqlalchemy"
+    },
+    "postgresql": {"postgresql", "postgres"},
+    "mysql": {"mysql"},
+    "mongodb": {"mongodb", "mongo", "nosql"},
+    "redis": {"redis", "caching"},
+
+    # Web & Frontend
+    "html5": {"html", "html5", "semantic html"},
+    "css3": {"css", "css3", "tailwind css", "tailwind", "bootstrap", "sass", "scss"},
+    "react": {"react", "react.js", "reactjs", "next.js", "nextjs"},
+    "next.js": {"next.js", "nextjs"},
+    "redux / zustand": {"redux", "zustand", "redux toolkit", "state management", "react context"},
+    "tailwind css": {"tailwind", "tailwind css", "tailwindcss"},
+    "web performance": {"web performance", "lighthouse", "core web vitals", "caching", "optimization"},
+
+    # Backend & APIs
+    "rest apis": {
+        "rest", "rest api", "rest apis", "restful api", "restful apis", "restful",
+        "fastapi", "flask", "django", "express", "express.js", "node.js", "nodejs",
+        "spring boot", "nestjs", "apis", "api development", "graphql"
+    },
+    "fastapi": {"fastapi", "fast api"},
+    "node.js": {"node", "node.js", "nodejs"},
+    "django": {"django", "django rest framework", "drf"},
+    "microservices": {"microservices", "distributed systems", "microservice architecture"},
+
+    # AI / ML & Data Science
+    "machine learning": {
+        "machine learning", "ml", "scikit-learn", "sklearn", "deep learning",
+        "pytorch", "tensorflow", "supervised learning", "unsupervised learning"
+    },
+    "deep learning": {
+        "deep learning", "neural networks", "pytorch", "tensorflow", "keras",
+        "deep neural networks", "cnn", "rnn", "transformers"
+    },
+    "scikit-learn": {"scikit-learn", "sklearn", "scikit learn"},
+    "pytorch": {"pytorch", "torch"},
+    "tensorflow": {"tensorflow", "tf", "keras"},
+    "transformers": {"transformers", "hugging face", "huggingface", "llm", "llms", "bert", "gpt", "rag", "langchain"},
+    "mathematics & statistics": {
+        "mathematics & statistics", "math & statistics", "statistics", "mathematics",
+        "linear algebra", "calculus", "probability", "statistical modeling"
+    },
+    "statistics": {"statistics", "mathematics & statistics", "statistical modeling", "hypothesis testing"},
+    "pandas": {"pandas"},
+    "numpy": {"numpy"},
+    "data visualization": {"data visualization", "matplotlib", "seaborn", "tableau", "power bi", "plotly"},
+    "tableau": {"tableau", "power bi", "data visualization", "looker", "dashboard"},
+    "power bi": {"power bi", "tableau", "data visualization", "looker", "dashboard"},
+    "excel": {"excel", "spreadsheets", "google sheets", "vlookup"},
+    "a/b testing": {"a/b testing", "hypothesis testing", "statistics", "experimentation"},
+    "etl": {"etl", "data pipeline", "spark", "data extraction", "sql"},
+
+    # Mobile
+    "flutter / react native": {"flutter", "react native", "dart"},
+    "dart / typescript": {"dart", "typescript", "ts", "javascript"},
+
+    # DevOps, Cloud & Testing
+    "unit testing": {"unit testing", "testing", "pytest", "junit", "jest", "test-driven development", "tdd", "integration testing"},
+    "ci/cd": {"ci/cd", "ci cd", "github actions", "gitlab ci", "continuous integration", "jenkins", "argocd"},
+    "docker": {"docker", "docker compose", "containerization", "containers"},
+    "kubernetes": {"kubernetes", "k8s"},
+    "git": {"git", "github", "gitlab", "version control", "git/github"},
+    "linux & bash": {"linux & bash", "linux", "bash", "shell scripting", "shell", "ubuntu", "cli", "unix"},
+    "linux": {"linux", "bash", "shell scripting", "shell", "ubuntu", "cli", "unix"},
+    "aws": {"aws", "amazon web services", "cloud", "ec2", "s3", "lambda"},
+    "cloud": {"aws", "gcp", "google cloud", "azure", "cloud computing"},
+    "terraform": {"terraform", "infrastructure as code", "iac", "cloudformation"},
+    "networking & security": {"networking", "network", "security", "tcp/ip", "dns", "ssl", "tls", "cybersecurity"},
+    "monitoring & logging": {"monitoring", "prometheus", "grafana", "logging", "datadog", "elk", "cloudwatch"}
+}
+
+def resolve_target_profile(target_role: str) -> Dict[str, Any]:
+    """Find the best matching role profile, checking direct match, aliases, and keyword matching."""
+    role_norm = target_role.strip().lower()
+    
+    # 1. Alias lookup
+    canonical_name = ROLE_ALIASES.get(role_norm)
+    if canonical_name and canonical_name in ROLE_SKILL_PROFILES:
+        return ROLE_SKILL_PROFILES[canonical_name]
+        
+    # 2. Direct key lookup (case-insensitive)
+    for k, v in ROLE_SKILL_PROFILES.items():
+        if k.lower() == role_norm:
+            return v
+            
+    # 3. Partial substring matching
+    for k, v in ROLE_SKILL_PROFILES.items():
+        k_lower = k.lower()
+        if k_lower in role_norm or role_norm in k_lower:
+            return v
+            
+    # Default fallback to Software Developer
+    return ROLE_SKILL_PROFILES["Software Developer"]
+
+def is_skill_satisfied(required_skill: str, current_skills: List[str]) -> bool:
+    """Intelligently check if a candidate's verified skills satisfy a required competency."""
+    if not required_skill or not current_skills:
+        return False
+        
+    req_norm = required_skill.lower().strip()
+    clean_current = {str(s).lower().strip() for s in current_skills if s}
+    
+    # 1. Direct equality
+    if req_norm in clean_current:
+        return True
+        
+    # 2. Directed competency satisfaction (specific tool satisfies general requirement)
+    satisfiers = COMPETENCY_SATISFACTIONS.get(req_norm)
+    if satisfiers:
+        for sat in satisfiers:
+            if sat in clean_current:
+                return True
+                
+    # 3. Whole-word / token boundary matching (e.g. 'FastAPI Framework' matches 'FastAPI')
+    # Prevents false positives like 'Java' matching 'JavaScript', 'Git' matching 'Digital', 'Go' matching 'Django'
+    escaped_req = re.escape(req_norm)
+    req_pattern = re.compile(rf"(^|[\s,/-]){escaped_req}([\s,/-]|$)", re.IGNORECASE)
+    for cs in clean_current:
+        if req_pattern.search(cs):
+            return True
+        if len(cs) >= 4:
+            escaped_cs = re.escape(cs)
+            cs_pattern = re.compile(rf"(^|[\s,/-]){escaped_cs}([\s,/-]|$)", re.IGNORECASE)
+            if cs_pattern.search(req_norm):
+                return True
+                
+    return False
 
 class RoadmapService:
     """Service for calculating role skill gaps and building personalized 5-phase roadmaps."""
 
     @staticmethod
     def calculate_skill_gap(target_role: str, current_skills: List[str]) -> Dict[str, Any]:
-        # Match against known profile or generate standard
-        profile = ROLE_SKILL_PROFILES.get(target_role)
-        if not profile:
-            # Default to Software Developer if role not directly matched
-            for k in ROLE_SKILL_PROFILES.keys():
-                if k.lower() in target_role.lower():
-                    profile = ROLE_SKILL_PROFILES[k]
-                    break
-            if not profile:
-                profile = ROLE_SKILL_PROFILES["Software Developer"]
-
+        profile = resolve_target_profile(target_role)
         required = profile["required_skills"]
-        current_set = set(s.lower() for s in current_skills)
 
         missing = []
         matching = []
         for req in required:
-            if req.lower() in current_set:
+            if is_skill_satisfied(req, current_skills):
                 matching.append(req)
             else:
                 missing.append(req)
@@ -936,16 +1213,7 @@ class RoadmapService:
 
     @staticmethod
     async def generate_roadmap(target_role: str, current_skills: List[str]) -> Dict[str, Any]:
-        # Check pre-compiled template
-        profile = ROLE_SKILL_PROFILES.get(target_role)
-        if not profile:
-            for k in ROLE_SKILL_PROFILES.keys():
-                if k.lower() in target_role.lower():
-                    profile = ROLE_SKILL_PROFILES[k]
-                    break
-            if not profile:
-                profile = ROLE_SKILL_PROFILES["Software Developer"]
-
+        profile = resolve_target_profile(target_role)
         phases = profile["default_phases"]
 
         # If live AI is available and user requested an unusual role, generate custom phases
@@ -980,7 +1248,7 @@ class RoadmapService:
             p_name = phase.get("phase_name", f"Phase {p_num}")
             for item in phase.get("items", []):
                 # Mark as completed if student already has this skill
-                is_already_known = any(item["skill_name"].lower() in cs.lower() for cs in current_skills)
+                is_already_known = is_skill_satisfied(item["skill_name"], current_skills)
                 initial_status = "completed" if is_already_known else "not_started"
                 
                 flattened_items.append({

@@ -48,17 +48,28 @@ def get_dashboard_summary(
     ).order_by(Resume.id.desc()).first()
 
     resume_score = None
-    detected_skills_count = 0
-    detected_skills_list = []
     if latest_resume and latest_resume.analysis:
         resume_score = latest_resume.analysis.score
-        detected_skills_list = latest_resume.analysis.detected_skills or []
-        detected_skills_count = len(detected_skills_list)
-    else:
-        # Fallback to UserSkill table
-        user_skills = db.query(UserSkill).filter(UserSkill.user_id == current_user.id).all()
-        detected_skills_count = len(user_skills)
-        detected_skills_list = [s.skill_name for s in user_skills]
+
+    # Merge skills from both UserSkill table and latest resume
+    user_skills = db.query(UserSkill).filter(UserSkill.user_id == current_user.id).all()
+    detected_skills_list = [s.skill_name for s in user_skills]
+    existing_lower = set(s.lower() for s in detected_skills_list)
+
+    if latest_resume and latest_resume.analysis and latest_resume.analysis.detected_skills:
+        for r_skill in latest_resume.analysis.detected_skills:
+            s_name = r_skill["name"] if isinstance(r_skill, dict) else str(r_skill)
+            if s_name and s_name.lower() not in existing_lower:
+                detected_skills_list.append(s_name)
+                existing_lower.add(s_name.lower())
+
+    if not detected_skills_list and getattr(current_user, "is_demo", False):
+        detected_skills_list = [
+            "Python", "PyTorch", "TensorFlow", "FastAPI", "Docker", "PostgreSQL",
+            "SQL", "Git", "Scikit-Learn", "Pandas", "NumPy", "C++", "Java", "Linux", "REST APIs"
+        ]
+
+    detected_skills_count = len(detected_skills_list)
 
     # 3. Latest Job Match Score
     latest_match = db.query(JobMatch).filter(

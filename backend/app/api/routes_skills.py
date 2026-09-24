@@ -84,15 +84,37 @@ def analyze_skill_gap(
     Analyze skill gap for selected target role:
     Current Skills -> Target Role -> Missing Skills -> Readiness %
     """
-    # Collect all user skills from UserSkill table and latest resume
+    # Collect all user skills from UserSkill table
     user_skills_records = db.query(UserSkill).filter(UserSkill.user_id == current_user.id).all()
     current_skills = [s.skill_name for s in user_skills_records]
 
-    # If empty, check latest resume
-    if not current_skills:
-        latest_resume = db.query(Resume).filter(Resume.user_id == current_user.id).order_by(Resume.id.desc()).first()
-        if latest_resume and latest_resume.analysis:
-            current_skills = latest_resume.analysis.detected_skills or []
+    # Also merge skills from latest resume if available
+    latest_resume = db.query(Resume).filter(Resume.user_id == current_user.id).order_by(Resume.id.desc()).first()
+    if latest_resume and latest_resume.analysis and latest_resume.analysis.detected_skills:
+        existing_lower = set(s.lower() for s in current_skills)
+        for r_skill in latest_resume.analysis.detected_skills:
+            s_name = r_skill["name"] if isinstance(r_skill, dict) else str(r_skill)
+            if s_name and s_name.lower() not in existing_lower:
+                current_skills.append(s_name)
+                existing_lower.add(s_name.lower())
+                # Sync into UserSkill table
+                db.add(UserSkill(
+                    user_id=current_user.id,
+                    skill_name=s_name,
+                    source="resume"
+                ))
+        db.commit()
+
+    # If demo mode and still empty, seed realistic student skills
+    if not current_skills and getattr(current_user, "is_demo", False):
+        demo_skills = [
+            "Python", "PyTorch", "TensorFlow", "FastAPI", "Docker", "PostgreSQL",
+            "SQL", "Git", "Scikit-Learn", "Pandas", "NumPy", "C++", "Java", "Linux", "REST APIs"
+        ]
+        current_skills = demo_skills
+        for d_sk in demo_skills:
+            db.add(UserSkill(user_id=current_user.id, skill_name=d_sk, source="sample"))
+        db.commit()
 
     gap_data = roadmap_service.calculate_skill_gap(
         target_role=payload.target_role,

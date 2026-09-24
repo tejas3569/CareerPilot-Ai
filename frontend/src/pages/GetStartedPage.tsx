@@ -94,8 +94,6 @@ export const GetStartedPage: React.FC<GetStartedPageProps> = ({ onNavigate }) =>
     }
   ];
 
-  const completedCount = [hasResume, hasJobMatch, hasInterview].filter(Boolean).length;
-
   return (
     <div className="space-y-8 sm:space-y-10 max-w-5xl mx-auto pb-12">
       {/* Welcome Hero Banner */}
@@ -118,23 +116,6 @@ export const GetStartedPage: React.FC<GetStartedPageProps> = ({ onNavigate }) =>
           <p className="text-xs sm:text-base text-indigo-200/90 leading-relaxed max-w-2xl">
             Follow this 4-step blueprint to transform your academic profile into an interview-ready software engineering candidate.
           </p>
-
-          {/* Quick Progress Indicator */}
-          <div className="pt-1 pb-1">
-            <div className="flex items-center justify-between text-xs text-indigo-200 mb-1.5 font-semibold">
-              <span className="flex items-center gap-1.5">
-                <TrendingUp className="w-3.5 h-3.5 text-indigo-400" />
-                Setup Progress ({completedCount}/3 core tasks done)
-              </span>
-              <span className="font-bold">{Math.round((completedCount / 3) * 100)}%</span>
-            </div>
-            <div className="w-full h-2 rounded-full bg-white/10 overflow-hidden">
-              <div
-                className="h-full rounded-full bg-gradient-to-r from-indigo-400 via-violet-400 to-emerald-400 transition-all duration-500"
-                style={{ width: `${Math.max(12, (completedCount / 3) * 100)}%` }}
-              />
-            </div>
-          </div>
 
           {/* Action Buttons */}
           <div className="pt-2 flex flex-wrap items-center gap-3">
