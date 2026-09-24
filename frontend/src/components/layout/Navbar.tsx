@@ -27,9 +27,20 @@ export const Navbar: React.FC<NavbarProps> = ({
   const { user, isDemo } = useAuth();
 
   return (
-    <header className="sticky top-0 z-30 h-16 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 px-3 sm:px-8 flex items-center justify-between w-full max-w-full overflow-hidden">
-      {/* Left side: Back/Forward buttons + hamburger + breadcrumb/target role */}
-      <div className="flex items-center gap-2 sm:gap-3">
+    <header className="sticky top-0 z-40 h-16 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 px-3 sm:px-8 flex items-center justify-between w-full shadow-xs transition-colors">
+      {/* Left side: Hamburger (mobile) + Arrow Keys + Target role badge */}
+      <div className="flex items-center gap-1.5 sm:gap-3 min-w-0">
+        {/* Mobile Hamburger Button - The 3 lines menu */}
+        <button
+          type="button"
+          onClick={onToggleMobileMenu}
+          className="p-2 rounded-xl text-slate-700 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 lg:hidden focus:outline-none focus:ring-2 focus:ring-indigo-500/20 active:scale-95 transition-all cursor-pointer"
+          title="Open Menu"
+          aria-label="Toggle navigation menu"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+
         {/* Navigation Arrow Keys (Back & Forward) */}
         <div className="flex items-center gap-0.5 bg-slate-100 dark:bg-slate-800/80 p-0.5 rounded-xl border border-slate-200/80 dark:border-slate-700/60 shadow-xs">
           <button
@@ -52,15 +63,8 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
         </div>
 
-        <button
-          onClick={onToggleMobileMenu}
-          className="p-2 rounded-xl text-slate-500 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 lg:hidden focus:outline-none"
-        >
-          <Menu className="w-5 h-5" />
-        </button>
-
-        <div className="flex items-center gap-2">
-          <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300">
+        <div className="hidden sm:flex items-center gap-2">
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300">
             <Briefcase className="w-3.5 h-3.5 text-indigo-500" />
             <span>Target:</span>
             <span className="text-indigo-600 dark:text-indigo-400 font-bold">
@@ -82,26 +86,28 @@ export const Navbar: React.FC<NavbarProps> = ({
         <button
           type="button"
           onClick={() => onNavigate('get_started')}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold text-xs shadow-xs hover:shadow-md transition-all cursor-pointer"
+          className="flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 active:scale-95 text-white font-bold text-xs shadow-sm hover:shadow-md transition-all cursor-pointer ring-1 ring-indigo-500/30"
           title="Go directly to Get Started guide"
         >
-          <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+          <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
           <span>Get Started</span>
         </button>
 
         <button
+          type="button"
           onClick={onToggleDarkMode}
-          className="p-2 rounded-xl text-slate-500 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none"
+          className="p-2 rounded-xl text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200/60 dark:border-slate-700/60 transition-colors focus:outline-none cursor-pointer active:scale-95"
           title={darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
         >
           {darkMode ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
         </button>
 
         <button
+          type="button"
           onClick={() => onNavigate('profile')}
-          className="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-left focus:outline-none"
+          className="flex items-center gap-2 pl-1.5 pr-2.5 sm:pr-3 py-1 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-left focus:outline-none cursor-pointer"
         >
-          <div className="w-7 h-7 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-xs">
+          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-600 to-violet-600 text-white flex items-center justify-center font-bold text-xs shadow-xs ring-2 ring-indigo-500/20">
             {user?.profile?.name ? user.profile.name[0] : <User className="w-3.5 h-3.5" />}
           </div>
           <span className="hidden sm:inline text-xs font-bold text-slate-800 dark:text-slate-200">

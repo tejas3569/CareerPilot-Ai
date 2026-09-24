@@ -26,8 +26,8 @@ type PublicView = 'landing' | 'login' | 'register' | 'forgot_password';
 const MainApp: React.FC = () => {
   const { isAuthenticated, isLoading, demoLogin } = useAuth();
   const [publicView, setPublicView] = useState<PublicView>('landing');
-  const [currentRoute, setCurrentRoute] = useState<NavRoute>('dashboard');
-  const [routeHistory, setRouteHistory] = useState<NavRoute[]>(['dashboard']);
+  const [currentRoute, setCurrentRoute] = useState<NavRoute>('get_started');
+  const [routeHistory, setRouteHistory] = useState<NavRoute[]>(['get_started']);
   const [historyIndex, setHistoryIndex] = useState<number>(0);
   const [darkMode, setDarkMode] = useState<boolean>(() => {
     return localStorage.getItem('careerpilot_theme') === 'dark';
@@ -94,7 +94,7 @@ const MainApp: React.FC = () => {
             onToggleDarkMode={() => setDarkMode(!darkMode)}
             onNavigateRegister={() => setPublicView('register')}
             onNavigateForgotPassword={() => setPublicView('forgot_password')}
-            onSuccess={() => setCurrentRoute('dashboard')}
+            onSuccess={() => setCurrentRoute('get_started')}
           />
           <Toast toast={toast} onClose={() => setToast(null)} />
         </>
@@ -108,7 +108,7 @@ const MainApp: React.FC = () => {
             darkMode={darkMode}
             onToggleDarkMode={() => setDarkMode(!darkMode)}
             onNavigateLogin={() => setPublicView('login')}
-            onSuccess={() => setCurrentRoute('dashboard')}
+            onSuccess={() => setCurrentRoute('get_started')}
           />
           <Toast toast={toast} onClose={() => setToast(null)} />
         </>
@@ -137,7 +137,7 @@ const MainApp: React.FC = () => {
           onTryDemo={async () => {
             try {
               await demoLogin();
-              setCurrentRoute('dashboard');
+              setCurrentRoute('get_started');
             } catch {
               showToast('Demo mode initialization failed', 'error');
             }

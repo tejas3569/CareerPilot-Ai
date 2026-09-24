@@ -28,7 +28,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex">
+    <div className="min-h-screen w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex">
       <Sidebar
         currentRoute={currentRoute}
         onNavigate={onNavigate}
@@ -36,7 +36,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
         onCloseMobile={() => setIsMobileSidebarOpen(false)}
       />
 
-      <div className="flex-1 flex flex-col min-w-0 lg:pl-64 w-full max-w-full overflow-x-hidden">
+      <div className="flex-1 flex flex-col min-w-0 lg:pl-64 w-full">
         <Navbar
           onToggleMobileMenu={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
           onNavigate={onNavigate}
