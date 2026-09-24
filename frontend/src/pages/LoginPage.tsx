@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sparkles, Mail, Lock, ArrowRight, AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { Sparkles, Mail, Lock, ArrowRight, AlertCircle, Eye, EyeOff, Sun, Moon } from 'lucide-react';
 import { Button } from '../components/common/Button';
 import { Card } from '../components/common/Card';
 import { useAuth } from '../context/AuthContext';
@@ -9,12 +9,16 @@ interface LoginPageProps {
   onNavigateRegister: () => void;
   onNavigateForgotPassword: () => void;
   onSuccess: () => void;
+  darkMode?: boolean;
+  onToggleDarkMode?: () => void;
 }
 
 export const LoginPage: React.FC<LoginPageProps> = ({
   onNavigateRegister,
   onNavigateForgotPassword,
   onSuccess,
+  darkMode = false,
+  onToggleDarkMode,
 }) => {
   const { login, demoLogin, loginWithGoogle } = useAuth();
   const [email, setEmail] = useState('');
@@ -56,7 +60,20 @@ export const LoginPage: React.FC<LoginPageProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative transition-colors">
+      {onToggleDarkMode && (
+        <div className="absolute top-4 right-4 sm:top-6 sm:right-6">
+          <button
+            type="button"
+            onClick={onToggleDarkMode}
+            className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-200/60 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 transition-colors cursor-pointer"
+            title={darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            aria-label="Toggle theme"
+          >
+            {darkMode ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-600 dark:text-slate-300" />}
+          </button>
+        </div>
+      )}
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
         <img
           src="/logo.png"

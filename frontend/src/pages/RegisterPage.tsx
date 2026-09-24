@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sparkles, Mail, Lock, User, Briefcase, ArrowRight, AlertCircle, Eye, EyeOff, Check } from 'lucide-react';
+import { Sparkles, Mail, Lock, User, Briefcase, ArrowRight, AlertCircle, Eye, EyeOff, Check, Sun, Moon } from 'lucide-react';
 import { Button } from '../components/common/Button';
 import { Card } from '../components/common/Card';
 import { useAuth } from '../context/AuthContext';
@@ -8,11 +8,15 @@ import { getAuthErrorMessage } from '../utils/authErrors';
 interface RegisterPageProps {
   onNavigateLogin: () => void;
   onSuccess: () => void;
+  darkMode?: boolean;
+  onToggleDarkMode?: () => void;
 }
 
 export const RegisterPage: React.FC<RegisterPageProps> = ({
   onNavigateLogin,
   onSuccess,
+  darkMode = false,
+  onToggleDarkMode,
 }) => {
   const { register, loginWithGoogle } = useAuth();
   const [name, setName] = useState('');
@@ -54,11 +58,26 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
-        <div className="mx-auto w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 to-indigo-500 flex items-center justify-center text-white shadow-lg shadow-indigo-200 dark:shadow-none mb-4">
-          <Sparkles className="w-7 h-7" />
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative transition-colors">
+      {onToggleDarkMode && (
+        <div className="absolute top-4 right-4 sm:top-6 sm:right-6">
+          <button
+            type="button"
+            onClick={onToggleDarkMode}
+            className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-200/60 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 transition-colors cursor-pointer"
+            title={darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            aria-label="Toggle theme"
+          >
+            {darkMode ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-600 dark:text-slate-300" />}
+          </button>
         </div>
+      )}
+      <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
+        <img
+          src="/logo.png"
+          alt="CareerPilot AI"
+          className="mx-auto w-14 h-14 rounded-2xl shadow-xl shadow-indigo-500/25 mb-4 object-cover"
+        />
         <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white">
           Create Student Account
         </h2>

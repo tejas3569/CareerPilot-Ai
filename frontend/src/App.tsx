@@ -90,6 +90,8 @@ const MainApp: React.FC = () => {
       return (
         <>
           <LoginPage
+            darkMode={darkMode}
+            onToggleDarkMode={() => setDarkMode(!darkMode)}
             onNavigateRegister={() => setPublicView('register')}
             onNavigateForgotPassword={() => setPublicView('forgot_password')}
             onSuccess={() => setCurrentRoute('dashboard')}
@@ -103,6 +105,8 @@ const MainApp: React.FC = () => {
       return (
         <>
           <RegisterPage
+            darkMode={darkMode}
+            onToggleDarkMode={() => setDarkMode(!darkMode)}
             onNavigateLogin={() => setPublicView('login')}
             onSuccess={() => setCurrentRoute('dashboard')}
           />
@@ -114,7 +118,11 @@ const MainApp: React.FC = () => {
     if (publicView === 'forgot_password') {
       return (
         <>
-          <ForgotPasswordPage onNavigateLogin={() => setPublicView('login')} />
+          <ForgotPasswordPage
+            darkMode={darkMode}
+            onToggleDarkMode={() => setDarkMode(!darkMode)}
+            onNavigateLogin={() => setPublicView('login')}
+          />
           <Toast toast={toast} onClose={() => setToast(null)} />
         </>
       );
@@ -123,6 +131,8 @@ const MainApp: React.FC = () => {
     return (
       <>
         <LandingPage
+          darkMode={darkMode}
+          onToggleDarkMode={() => setDarkMode(!darkMode)}
           onGetStarted={() => setPublicView('register')}
           onTryDemo={async () => {
             try {

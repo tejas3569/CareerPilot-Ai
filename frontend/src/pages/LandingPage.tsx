@@ -13,7 +13,9 @@ import {
   GraduationCap,
   ShieldCheck,
   TrendingUp,
-  Users
+  Users,
+  Sun,
+  Moon
 } from 'lucide-react';
 import { Button } from '../components/common/Button';
 import { Card } from '../components/common/Card';
@@ -23,12 +25,16 @@ interface LandingPageProps {
   onGetStarted: () => void;
   onTryDemo: () => void;
   onLogin: () => void;
+  darkMode?: boolean;
+  onToggleDarkMode?: () => void;
 }
 
 export const LandingPage: React.FC<LandingPageProps> = ({
   onGetStarted,
   onTryDemo,
   onLogin,
+  darkMode = false,
+  onToggleDarkMode,
 }) => {
   const featureList = [
     {
@@ -66,31 +72,70 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col">
       {/* Top Navigation */}
-      <header className="sticky top-0 z-30 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 px-6 sm:px-12 h-20 flex items-center justify-between">
-        <div className="flex items-center gap-3">
+      <header className="sticky top-0 z-30 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 px-3 sm:px-8 lg:px-12 h-16 sm:h-20 flex items-center justify-between transition-colors">
+        {/* Left: Brand Logo & Title */}
+        <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
           <img
             src="/logo.png"
             alt="CareerPilot AI"
-            className="w-10 h-10 rounded-xl shadow-md shadow-indigo-500/20 object-cover"
+            className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl shadow-md shadow-indigo-500/20 object-cover flex-shrink-0"
           />
-          <div>
-            <span className="font-bold text-lg tracking-tight text-slate-900 dark:text-white">
+          <div className="flex items-center">
+            <span className="font-bold text-sm sm:text-lg tracking-tight text-slate-900 dark:text-white whitespace-nowrap">
               CareerPilot <span className="text-indigo-600 dark:text-indigo-400">AI</span>
             </span>
-            <span className="hidden sm:inline-block ml-2 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300 rounded-md border border-indigo-200/60 dark:border-indigo-800">
+            <span className="hidden md:inline-block ml-2 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300 rounded-md border border-indigo-200/60 dark:border-indigo-800">
               Campus Copilot
             </span>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          <Button variant="ghost" size="sm" onClick={onLogin}>
+        {/* Right: Actions, Outlined Sign In, & Theme Toggle */}
+        <div className="flex items-center gap-1.5 sm:gap-2.5">
+          {/* Light / Dark Mode Toggle Button */}
+          {onToggleDarkMode && (
+            <button
+              type="button"
+              onClick={onToggleDarkMode}
+              className="p-1.5 sm:p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 transition-colors cursor-pointer flex-shrink-0"
+              title={darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              aria-label="Toggle theme"
+            >
+              {darkMode ? (
+                <Sun className="w-4 h-4 text-amber-400" />
+              ) : (
+                <Moon className="w-4 h-4 text-slate-600 dark:text-slate-300" />
+              )}
+            </button>
+          )}
+
+          {/* Outlined Sign In Button */}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onLogin}
+            className="border border-slate-300 dark:border-slate-700 hover:border-indigo-500 dark:hover:border-indigo-500 text-xs sm:text-sm px-2.5 sm:px-3 py-1 font-semibold whitespace-nowrap"
+          >
             Sign In
           </Button>
-          <Button variant="outline" size="sm" onClick={onTryDemo}>
+
+          {/* Try Demo (visible on tablet and desktop) */}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onTryDemo}
+            className="hidden sm:inline-flex text-xs sm:text-sm px-3 py-1 font-semibold whitespace-nowrap"
+          >
             Try Demo
           </Button>
-          <Button variant="primary" size="sm" onClick={onGetStarted}>
+
+          {/* Get Started Button */}
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={onGetStarted}
+            className="text-xs sm:text-sm px-2.5 sm:px-4 py-1 font-semibold whitespace-nowrap shadow-xs"
+          >
             Get Started
           </Button>
         </div>
