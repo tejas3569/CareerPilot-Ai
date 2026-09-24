@@ -1,5 +1,6 @@
 import json
 import re
+import os
 from typing import Dict, Any, Optional, List
 import httpx
 from app.config import settings
@@ -11,36 +12,49 @@ class AIService:
     """
     def __init__(self):
         self.gemini_client = None
-        if settings.GEMINI_API_KEY:
+        api_key = settings.GEMINI_API_KEY or os.environ.get("GEMINI_API_KEY", "")
+        if api_key:
             try:
                 from google import genai
-                self.gemini_client = genai.Client(api_key=settings.GEMINI_API_KEY)
+                self.gemini_client = genai.Client(api_key=api_key)
             except Exception as e:
                 print(f"[AIService] Warning: Could not initialize Gemini client: {e}")
 
     def is_live_ai_available(self) -> bool:
         """Returns True if a live LLM API key is configured."""
-        if settings.LLM_PROVIDER == "gemini" and bool(settings.GEMINI_API_KEY):
+        api_key = settings.GEMINI_API_KEY or os.environ.get("GEMINI_API_KEY", "")
+        if settings.LLM_PROVIDER == "gemini" and bool(api_key):
             return True
-        if settings.LLM_PROVIDER == "openai" and bool(settings.OPENAI_API_KEY):
+        openai_key = settings.OPENAI_API_KEY or os.environ.get("OPENAI_API_KEY", "")
+        if settings.LLM_PROVIDER == "openai" and bool(openai_key):
             return True
         return False
 
     async def generate_text(self, prompt: str, system_instruction: str = "") -> str:
         """Generate unstructured text from the configured AI provider."""
-        if self.gemini_client and settings.GEMINI_API_KEY:
+        api_key = settings.GEMINI_API_KEY or os.environ.get("GEMINI_API_KEY", "")
+        if not self.gemini_client and api_key:
             try:
-                from google.genai import types
-                config = types.GenerateContentConfig(system_instruction=system_instruction) if system_instruction else None
-                response = self.gemini_client.models.generate_content(
-                    model=settings.LLM_MODEL or "gemini-2.5-flash",
-                    contents=prompt,
-                    config=config
-                )
-                if response and response.text:
-                    return response.text.strip()
+                from google import genai
+                self.gemini_client = genai.Client(api_key=api_key)
             except Exception as e:
-                print(f"[AIService] Gemini text generation error: {e}")
+                print(f"[AIService] Warning: On-demand Gemini client init: {e}")
+
+        if self.gemini_client and api_key:
+            models_to_try = [settings.LLM_MODEL or "gemini-2.5-flash", "gemini-1.5-flash", "gemini-2.0-flash"]
+            for model_name in models_to_try:
+                try:
+                    from google.genai import types
+                    config = types.GenerateContentConfig(system_instruction=system_instruction) if system_instruction else None
+                    response = self.gemini_client.models.generate_content(
+                        model=model_name,
+                        contents=prompt,
+                        config=config
+                    )
+                    if response and response.text:
+                        return response.text.strip()
+                except Exception as e:
+                    print(f"[AIService] Gemini text generation error with {model_name}: {e}")
 
         # OpenAI fallback if configured
         if settings.OPENAI_API_KEY:
@@ -109,11 +123,13 @@ class AIService:
         msg_lower = clean_msg.lower()
 
         system_instruction = (
-            f"You are CareerPilot AI, the premier AI Career Copilot and Senior Engineering Mentor "
-            f"created by founder Kommana Kesava Ram Sai Tejas. You assist college students and engineering candidates "
-            f"in landing top placement offers and internships in {target_role} and related tech fields. "
-            f"Provide insightful, friendly, highly actionable answers with code examples, architectural breakdowns, "
-            f"and clear interview frameworks (e.g. STAR method) where relevant."
+            "You are CareerPilot AI, an intelligent, empathetic, versatile AI assistant and senior technical mentor "
+            "similar to ChatGPT and Google Gemini. "
+            "You converse naturally, intelligently, and directly in response to whatever the user asks. "
+            "If the user asks for casual conversation, non-job chat, life advice, relaxation, greetings, or fun trivia, "
+            "chat with them warmly, engagingly, and naturally without forcing technical interview structures. "
+            "If the user asks technical, coding, career, or placement questions, provide thorough, accurate, beautifully formatted answers "
+            "with markdown headings, bullet points, and code snippets where helpful."
         )
 
         # 1. Founder & Platform Origin Query
@@ -140,19 +156,23 @@ class AIService:
         # 2. Try live LLM if available
         if self.is_live_ai_available():
             try:
-                formatted_history = "\n".join([f"{h.get('role', 'user').title()}: {h.get('content', '')}" for h in history[-6:]])
+                formatted_history = "\n".join([f"{h.get('role', 'user').title()}: {h.get('content', '')}" for h in history[-8:]])
                 prompt = (
-                    f"Conversation Context:\n{formatted_history}\n\n"
-                    f"Candidate Question: {clean_msg}\n\n"
-                    f"Answer the candidate thoroughly, concisely, and practically with clear formatting and actionable code/steps."
+                    f"Conversation History:\n{formatted_history}\n\n"
+                    f"User Message: {clean_msg}\n\n"
+                    f"Respond directly, engagingly, and naturally to the user's message like ChatGPT or Gemini."
                 )
                 live_text = await self.generate_text(prompt, system_instruction=system_instruction)
                 if live_text:
-                    followup_prompt = f"Given this question: '{clean_msg}', suggest 3 brief logical follow-up questions a student might ask. Return ONLY valid JSON: [\"q1\", \"q2\", \"q3\"]"
+                    followup_prompt = (
+                        f"User asked: '{clean_msg}'. AI replied: '{live_text[:200]}...'. "
+                        f"Suggest 3 short, natural, relevant follow-up questions or conversation starters (under 8 words each) the user might ask next. "
+                        f"Return ONLY valid JSON array of 3 strings: [\"q1\", \"q2\", \"q3\"]"
+                    )
                     followups = await self.generate_json(followup_prompt) or [
-                        "Can you show a concrete code example of this?",
-                        "What common interview mistakes do candidates make here?",
-                        "How do top tech companies test this concept?"
+                        "Can you tell me more about that?",
+                        "What is another perspective on this?",
+                        "Can you give an example?"
                     ]
                     return {
                         "reply": live_text,
@@ -161,9 +181,117 @@ class AIService:
             except Exception as e:
                 print(f"[AIService] Live chat generation fallback: {e}")
 
-        # 3. High-Accuracy Offline Engineering Knowledge Engine
+        # 3. High-Accuracy Conversational Knowledge Engine (Offline Mode)
 
-        # 3.1. Behavioral Interview & STAR Method
+        # 3.1. Casual / Non-Job / Break / Chit-chat Request
+        non_job_triggers = [
+            "without any job", "no job", "not about job", "not about work", "without job",
+            "talk for some time", "just talk", "just chat", "casual chat", "talk casually",
+            "chill", "relax", "take a break", "tired of studying", "talk about something else",
+            "non tech", "non-job", "free time", "bored", "can me talk", "can we talk"
+        ]
+        if any(w in msg_lower for w in non_job_triggers):
+            return {
+                "reply": (
+                    "### ☕ Relax & Chat Time!\n\n"
+                    "Absolutely! We definitely don't have to talk about jobs, interviews, or placements right now. 😊\n\n"
+                    "Balancing studies, placement pressure, and coding can get intense. Taking a real mental break is essential for recharging your energy! "
+                    "I'm here to chat about whatever you'd like:\n\n"
+                    "- 🎬 **Movies & Series**: What are you watching lately? Sci-fi, comedies, thrillers, anime, or dramas?\n"
+                    "- 🎮 **Gaming & Hobbies**: Are you playing any games, reading books, or into music/sports?\n"
+                    "- 🌌 **Space & Science Wonders**: Black holes, space exploration, deep-sea mysteries, or mind-bending trivia.\n"
+                    "- 🧩 **Brain Teasers & Riddles**: A fun riddle or puzzle to exercise your brain without any interview stress.\n"
+                    "- 💬 **Just Life**: How has your day or college week been going?\n\n"
+                    "What's on your mind? Tell me anything you feel like talking about!"
+                ),
+                "suggested_followups": [
+                    "Tell me a mind-blowing space or science fact",
+                    "Give me a fun riddle to solve",
+                    "What are your favorite movie or book recommendations?"
+                ]
+            }
+
+        # 3.2. Greetings & Social Interaction
+        greetings = ["hi", "hello", "hey", "good morning", "good afternoon", "good evening", "how are you", "what's up", "sup", "yo", "namaste", "hola"]
+        words_in_msg = [w.strip(".,!?:; ") for w in msg_lower.split()]
+        if any(w in greetings for w in words_in_msg) and len(words_in_msg) <= 4:
+            return {
+                "reply": (
+                    f"### 👋 Hello there!\n\n"
+                    f"Great to connect with you! How are you doing today? 😊\n\n"
+                    f"I'm your **CareerPilot AI Assistant** — think of me like your friendly AI companion, ready to chat just like ChatGPT and Gemini.\n\n"
+                    f"You can talk to me about **anything**:\n"
+                    f"- 💬 **Casual Conversation**: Chat about hobbies, games, movies, science, or just have a relaxed talk.\n"
+                    f"- 💡 **Tech & General Knowledge**: Ask \"how does this work?\", explore modern frameworks, architecture, or code.\n"
+                    f"- 🚀 **Career & Interview Prep**: Practice DSA, system design, mock interviews, or polish resume bullet points whenever you're ready.\n\n"
+                    f"What's on your mind today?"
+                ),
+                "suggested_followups": [
+                    "Let's have a casual chat about non-job topics",
+                    "Tell me a fun developer joke or riddle",
+                    "What are the most popular tech trends right now?"
+                ]
+            }
+
+        # 3.3. Jokes & Humor
+        if any(w in msg_lower for w in ["joke", "funny", "make me laugh", "humor", "tell me a joke"]):
+            return {
+                "reply": (
+                    "### 😄 Here are a few favorite tech & developer jokes for you!\n\n"
+                    "1. **Why do programmers prefer dark mode?**\n"
+                    "   *Because light attracts bugs!* 🐛\n\n"
+                    "2. **A SQL query walks into a bar...**\n"
+                    "   *It walks up to two tables and asks: \"Can I join you?\"* 🗄️\n\n"
+                    "3. **There are 10 types of people in this world:**\n"
+                    "   *Those who understand binary, and those who don't.* 💻\n\n"
+                    "4. **Why was the JavaScript developer sad?**\n"
+                    "   *Because they didn't `Node` how to `Express` themselves!* 📦\n\n"
+                    "Hope that brought a smile to your day! Would you like another one, or a fun brain-teaser riddle?"
+                ),
+                "suggested_followups": [
+                    "Give me another developer joke!",
+                    "Give me a tricky brain-teaser riddle",
+                    "Tell me an interesting science trivia fact"
+                ]
+            }
+
+        # 3.4. Riddles & Logic Puzzles
+        if any(w in msg_lower for w in ["riddle", "puzzle", "brain teaser"]):
+            return {
+                "reply": (
+                    "### 🧩 Here's a classic lateral thinking riddle for you:\n\n"
+                    "> **\"I speak without a mouth and hear without ears. I have no body, but I come alive with wind. What am I?\"**\n\n"
+                    "Take your time thinking about it! 🌬️\n\n"
+                    "*(Hint: You often hear me in deep canyons, mountains, or vast empty hallways)*\n\n"
+                    "When you're ready, reply with your guess or ask for the answer!"
+                ),
+                "suggested_followups": [
+                    "Is the answer an Echo?",
+                    "Give me another riddle!",
+                    "Tell me a fun math puzzle"
+                ]
+            }
+
+        # 3.5. Stress / Mental Health / Burnout Support
+        if any(w in msg_lower for w in ["stressed", "anxious", "tired", "overwhelmed", "nervous", "burnout", "burned out", "scared", "depressed", "exhausted", "imposter syndrome"]):
+            return {
+                "reply": (
+                    "### 💙 Take a Deep Breath — You're Doing Great\n\n"
+                    "It is completely normal to feel overwhelmed, stressed, or tired. Balancing college, exams, placement preparation, and future uncertainty is genuinely difficult.\n\n"
+                    "Here are three gentle reminders to keep in mind:\n"
+                    "1. **Rest is Productive**: Taking an hour or an afternoon away from coding or studying isn't \"wasting time\" — it lets your subconscious mind consolidate what you've learned.\n"
+                    "2. **Progress Over Perfection**: You don't need to solve 500 LeetCode problems or master every framework overnight. Doing just 1 problem or reading 1 concept consistently adds up massively.\n"
+                    "3. **Avoid the Comparison Trap**: Everyone learns at their own pace. Never compare your Day 10 to someone else's Day 300.\n\n"
+                    "Step away from the screen for a bit, drink some water, or listen to your favorite song. If you just want to talk about non-career things or relax, I'm right here!"
+                ),
+                "suggested_followups": [
+                    "How do I manage time between college coursework and placement prep?",
+                    "Let's chat about something fun and non-technical",
+                    "Tell me an inspiring story about a tech pioneer"
+                ]
+            }
+
+        # 3.6. Behavioral Interview & STAR Method
         if any(w in msg_lower for w in ["star", "conflict", "behavioral", "hr question", "tell me about yourself", "weakness", "leadership", "failure"]):
             reply = (
                 "### 🎯 Mastering the Behavioral Interview with the STAR Framework\n\n"
@@ -408,26 +536,24 @@ class AIService:
                 "When should you choose PostgreSQL over MongoDB?"
             ]
 
-        # 3.11. Dynamic Tailored Knowledge Synthesizer
+        # 3.16. Intelligent Conversational Answer Synthesizer
         else:
             reply = (
-                f"### 💡 CareerPilot AI Mentorship: Deep-Dive into \"{clean_msg}\"\n\n"
-                f"For candidates preparing for **{target_role}** placements, tackling questions like this requires structured technical rigor:\n\n"
-                f"#### 1. Core Technical Foundation\n"
-                f"- **Deconstruct the Objective**: Clarify requirements, identify edge cases (e.g. null inputs, boundary values, network latency), and formulate baseline constraints.\n"
-                f"- **Time & Space Trade-offs**: In placement interviews, always state the brute-force complexity first before optimizing to $O(n)$ or $O(\\log n)$.\n\n"
-                f"#### 2. Practical Implementation Steps\n"
-                f"1. Break down the system or code logic into modular, testable components.\n"
-                f"2. Validate input schemas and write descriptive variable names that communicate business intent.\n"
-                f"3. Anticipate failure modes: race conditions, memory leaks, and timeout thresholds.\n\n"
-                f"#### 3. How to Answer in an Interview\n"
-                f"State your assumptions aloud to the interviewer: *\"I'm assuming our inputs fit in memory. If data volume scales beyond RAM, we can transition to external sorting or distributed partitions.\"*\n\n"
-                f"💡 *Would you like me to show a concrete code implementation, system diagram, or run a simulated interview question on this topic?*"
+                f"### 💡 {clean_msg.capitalize()}\n\n"
+                f"Here is a clear, intuitive explanation of **{clean_msg}**:\n\n"
+                f"#### 1. Core Idea & Purpose\n"
+                f"At its foundation, this revolves around understanding how systems or concepts operate efficiently, "
+                f"what problem they solve, and how they connect to broader real-world applications.\n\n"
+                f"#### 2. Key Insights\n"
+                f"- **Concept Breakdown**: Focus on the simplest mental model first before diving into advanced edge cases.\n"
+                f"- **Practical Application**: In real-world engineering and development, this is applied to maintain high quality, reliability, and clear structure.\n"
+                f"- **Best Practice**: Always evaluate trade-offs (simplicity vs flexibility, speed vs memory) based on specific goals.\n\n"
+                f"Feel free to ask for a concrete code snippet, a real-world analogy, or ask any other question on your mind!"
             )
             followups = [
-                f"Can you provide a concrete code example for {clean_msg[:30]}?",
-                f"What are the most common interview traps regarding {clean_msg[:25]}?",
-                f"How would a senior engineer explain this in a placement round?"
+                f"Can you explain this with a simple real-world analogy?",
+                f"Can you show a practical example of this?",
+                f"What are the most common questions asked about this?"
             ]
 
         return {

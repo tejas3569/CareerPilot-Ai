@@ -45,7 +45,22 @@ async def test_chat_ai_founder_and_offline_response():
         target_role="Software Developer"
     )
     assert "Situation" in res_star["reply"] or "STAR" in res_star["reply"]
-    assert len(res_star["suggested_followups"]) > 0
+    # Test casual non-job conversation request
+    res_casual = await ai_service.chat_completion(
+        message="hi can me talk for some time without any job things",
+        target_role="Software Developer"
+    )
+    assert "Deconstruct the Objective" not in res_casual["reply"]
+    assert "don't have to talk about jobs" in res_casual["reply"] or "Relax" in res_casual["reply"]
+    assert len(res_casual["suggested_followups"]) > 0
+
+    # Test friendly greeting
+    res_greet = await ai_service.chat_completion(
+        message="hello",
+        target_role="Software Developer"
+    )
+    assert "Deconstruct the Objective" not in res_greet["reply"]
+    assert "Hello" in res_greet["reply"] or "connect" in res_greet["reply"]
 
 def test_chat_api_endpoint(client):
     # Obtain auth token via demo login

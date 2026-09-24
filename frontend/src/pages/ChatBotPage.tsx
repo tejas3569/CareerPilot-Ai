@@ -13,6 +13,8 @@ import {
   Layers,
   ShieldCheck,
   ChevronRight,
+  ChevronLeft,
+  ArrowDown,
   RefreshCw,
   Terminal,
   Cpu
@@ -98,14 +100,51 @@ export const ChatBotPage: React.FC<ChatBotPageProps> = ({ onShowToast }) => {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const quickTopicsRef = useRef<HTMLDivElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+
+  const [showScrollToBottom, setShowScrollToBottom] = useState(false);
+  const [canScrollTopicsLeft, setCanScrollTopicsLeft] = useState(false);
+  const [canScrollTopicsRight, setCanScrollTopicsRight] = useState(true);
 
   const scrollToBottom = (smooth = true) => {
     messagesEndRef.current?.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto' });
+    setShowScrollToBottom(false);
+  };
+
+  const handleChatScroll = () => {
+    if (chatContainerRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
+      const isScrolledUp = scrollHeight - scrollTop - clientHeight > 120;
+      setShowScrollToBottom(isScrolledUp);
+    }
+  };
+
+  const checkTopicsScroll = () => {
+    if (quickTopicsRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = quickTopicsRef.current;
+      setCanScrollTopicsLeft(scrollLeft > 10);
+      setCanScrollTopicsRight(scrollLeft < scrollWidth - clientWidth - 10);
+    }
+  };
+
+  const scrollTopics = (direction: 'left' | 'right') => {
+    if (quickTopicsRef.current) {
+      const offset = direction === 'left' ? -240 : 240;
+      quickTopicsRef.current.scrollBy({ left: offset, behavior: 'smooth' });
+      setTimeout(checkTopicsScroll, 250);
+    }
   };
 
   useEffect(() => {
     scrollToBottom();
   }, [messages, isSending]);
+
+  useEffect(() => {
+    checkTopicsScroll();
+    window.addEventListener('resize', checkTopicsScroll);
+    return () => window.removeEventListener('resize', checkTopicsScroll);
+  }, []);
 
   const handleSendMessage = async (textToSend?: string) => {
     const text = (textToSend || inputValue).trim();
@@ -224,30 +263,63 @@ export const ChatBotPage: React.FC<ChatBotPageProps> = ({ onShowToast }) => {
         </div>
       </div>
 
-      {/* Preset Suggestion Chips Bar */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1 flex-shrink-0 scrollbar-none px-1">
-        <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1 flex-shrink-0">
-          <Lightbulb className="w-3.5 h-3.5 text-amber-500" /> Quick Topics:
-        </span>
-        {PRESET_PROMPTS.map((p, idx) => {
-          const Icon = p.icon;
-          return (
-            <button
-              key={idx}
-              type="button"
-              onClick={() => handleSendMessage(p.prompt)}
-              disabled={isSending}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/40 whitespace-nowrap transition-all cursor-pointer shadow-2xs group"
-            >
-              <Icon className="w-3.5 h-3.5 text-slate-400 group-hover:text-indigo-500 transition-colors" />
-              <span>{p.label}</span>
-            </button>
-          );
-        })}
+      {/* Preset Suggestion Chips Bar with Scroll Controls */}
+      <div className="relative flex items-center group/topics flex-shrink-0">
+        {canScrollTopicsLeft && (
+          <button
+            type="button"
+            onClick={() => scrollTopics('left')}
+            className="absolute left-0 z-10 p-1 rounded-full bg-white/95 dark:bg-slate-800/95 text-slate-700 dark:text-slate-200 shadow-md border border-slate-200 dark:border-slate-700 hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-slate-700 transition-all cursor-pointer"
+            title="Scroll topics left"
+            aria-label="Scroll topics left"
+          >
+            <ChevronLeft className="w-3.5 h-3.5" />
+          </button>
+        )}
+        <div
+          ref={quickTopicsRef}
+          onScroll={checkTopicsScroll}
+          className="flex items-center gap-2 overflow-x-auto pb-1 flex-1 px-1 scroll-smooth"
+        >
+          <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1 flex-shrink-0">
+            <Lightbulb className="w-3.5 h-3.5 text-amber-500" /> Quick Topics:
+          </span>
+          {PRESET_PROMPTS.map((p, idx) => {
+            const Icon = p.icon;
+            return (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => handleSendMessage(p.prompt)}
+                disabled={isSending}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/40 whitespace-nowrap transition-all cursor-pointer shadow-2xs group flex-shrink-0"
+              >
+                <Icon className="w-3.5 h-3.5 text-slate-400 group-hover:text-indigo-500 transition-colors" />
+                <span>{p.label}</span>
+              </button>
+            );
+          })}
+        </div>
+        {canScrollTopicsRight && (
+          <button
+            type="button"
+            onClick={() => scrollTopics('right')}
+            className="absolute right-0 z-10 p-1 rounded-full bg-white/95 dark:bg-slate-800/95 text-slate-700 dark:text-slate-200 shadow-md border border-slate-200 dark:border-slate-700 hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-slate-700 transition-all cursor-pointer"
+            title="Scroll topics right"
+            aria-label="Scroll topics right"
+          >
+            <ChevronRight className="w-3.5 h-3.5" />
+          </button>
+        )}
       </div>
 
-      {/* Messages Stream Container */}
-      <div className="flex-1 overflow-y-auto px-2 sm:px-4 py-4 space-y-5 rounded-2xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70 shadow-inner">
+      {/* Messages Stream Container with Scroll-to-Bottom Button */}
+      <div className="relative flex-1 min-h-0 flex flex-col">
+        <div
+          ref={chatContainerRef}
+          onScroll={handleChatScroll}
+          className="flex-1 overflow-y-auto px-2 sm:px-4 py-4 space-y-5 rounded-2xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70 shadow-inner scroll-smooth"
+        >
         {messages.map((m) => {
           const isUser = m.role === 'user';
           return (
@@ -402,6 +474,21 @@ export const ChatBotPage: React.FC<ChatBotPageProps> = ({ onShowToast }) => {
         )}
 
         <div ref={messagesEndRef} />
+        </div>
+
+        {/* Floating Scroll to Bottom Button */}
+        {showScrollToBottom && (
+          <button
+            type="button"
+            onClick={() => scrollToBottom(true)}
+            className="absolute bottom-4 right-6 z-20 flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-xs font-bold shadow-xl shadow-indigo-500/40 hover:scale-105 transition-all cursor-pointer border border-indigo-400/40 backdrop-blur-sm animate-fade-in"
+            title="Scroll to bottom"
+            aria-label="Scroll to bottom"
+          >
+            <ArrowDown className="w-3.5 h-3.5 animate-bounce" />
+            <span>Scroll to Bottom</span>
+          </button>
+        )}
       </div>
 
       {/* Input Form Bar */}
