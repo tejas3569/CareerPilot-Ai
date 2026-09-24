@@ -70,18 +70,18 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col">
       {/* Top Navigation */}
-      <header className="sticky top-0 z-30 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 px-3 sm:px-8 lg:px-12 h-16 sm:h-20 flex items-center justify-between transition-colors">
+      <header className="sticky top-0 z-30 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 px-3 sm:px-8 lg:px-12 h-16 sm:h-20 flex items-center justify-between transition-colors w-full max-w-full overflow-hidden">
         {/* Left: Brand Logo & Title */}
-        <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+        <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
           <img
             src="/logo.png"
             alt="CareerPilot AI"
-            className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl shadow-md shadow-indigo-500/20 object-cover flex-shrink-0"
+            className="w-7 h-7 sm:w-10 sm:h-10 rounded-xl shadow-md shadow-indigo-500/20 object-cover shrink-0"
           />
           <div className="flex items-center">
-            <span className="font-bold text-sm sm:text-lg tracking-tight text-slate-900 dark:text-white whitespace-nowrap">
+            <span className="font-bold text-sm sm:text-base md:text-lg tracking-tight text-slate-900 dark:text-white whitespace-nowrap">
               CareerPilot <span className="text-indigo-600 dark:text-indigo-400">AI</span>
             </span>
             <span className="hidden md:inline-block ml-2 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300 rounded-md border border-indigo-200/60 dark:border-indigo-800">
@@ -91,24 +91,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         </div>
 
         {/* Right: Actions, Outlined Sign In, & Theme Toggle */}
-        <div className="flex items-center gap-1.5 sm:gap-2.5">
-          {/* Light / Dark Mode Toggle Button */}
-          {onToggleDarkMode && (
-            <button
-              type="button"
-              onClick={onToggleDarkMode}
-              className="p-1.5 sm:p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 transition-colors cursor-pointer flex-shrink-0"
-              title={darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-              aria-label="Toggle theme"
-            >
-              {darkMode ? (
-                <Sun className="w-4 h-4 text-amber-400" />
-              ) : (
-                <Moon className="w-4 h-4 text-slate-600 dark:text-slate-300" />
-              )}
-            </button>
-          )}
-
+        <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
           {/* Outlined Sign In Button */}
           <Button
             variant="outline"
@@ -119,15 +102,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             Sign In
           </Button>
 
-          {/* Try Demo (visible on tablet and desktop) */}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={onTryDemo}
-            className="hidden sm:inline-flex text-xs sm:text-sm px-3 py-1 font-semibold whitespace-nowrap"
-          >
-            Try Demo
-          </Button>
+          {/* Try Demo (visible on tablet and desktop only) */}
+          <div className="hidden md:block">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onTryDemo}
+              className="text-xs sm:text-sm px-3 py-1 font-semibold whitespace-nowrap"
+            >
+              Try Demo
+            </Button>
+          </div>
 
           {/* Get Started Button */}
           <Button
@@ -138,29 +123,46 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           >
             Get Started
           </Button>
+
+          {/* Light / Dark Mode Toggle Button (at far right corner of navbar) */}
+          {onToggleDarkMode && (
+            <button
+              type="button"
+              onClick={onToggleDarkMode}
+              className="p-1.5 sm:p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 transition-colors cursor-pointer shrink-0"
+              title={darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              aria-label="Toggle theme"
+            >
+              {darkMode ? (
+                <Sun className="w-4 h-4 text-amber-400" />
+              ) : (
+                <Moon className="w-4 h-4 text-slate-600 dark:text-slate-300" />
+              )}
+            </button>
+          )}
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="relative pt-20 pb-24 px-6 sm:px-12 max-w-6xl mx-auto text-center flex flex-col items-center">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200/80 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 text-xs font-semibold mb-8 animate-subtle">
-          <Sparkles className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
-          <span>Built for College Students Targeting Software & AI/ML Roles</span>
+      <section className="relative pt-16 sm:pt-20 pb-20 sm:pb-24 px-4 sm:px-12 max-w-6xl mx-auto text-center flex flex-col items-center w-full overflow-hidden">
+        <div className="inline-flex items-center gap-2 px-3 sm:px-3.5 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200/80 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 text-xs font-semibold mb-8 animate-subtle max-w-full">
+          <Sparkles className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400 shrink-0" />
+          <span className="truncate sm:whitespace-normal">Built for College Students Targeting Software & AI/ML Roles</span>
         </div>
 
-        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-slate-900 dark:text-white max-w-4xl leading-[1.1]">
+        <h1 className="text-3xl sm:text-6xl lg:text-7xl font-black tracking-tight text-slate-900 dark:text-white max-w-4xl leading-[1.1]">
           Turn Your Resume Into Your{' '}
           <span className="bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 bg-clip-text text-transparent">
             Career Roadmap
           </span>
         </h1>
 
-        <p className="mt-6 text-lg sm:text-xl text-slate-600 dark:text-slate-300 max-w-2xl leading-relaxed">
+        <p className="mt-6 text-base sm:text-xl text-slate-600 dark:text-slate-300 max-w-2xl leading-relaxed">
           Analyze your resume, discover skill gaps, practice interviews, and prepare smarter for your next opportunity.
         </p>
 
         {/* Call to Actions */}
-        <div className="mt-10 flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+        <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row items-center gap-3 sm:gap-4 w-full sm:w-auto">
           <Button
             size="lg"
             variant="primary"
@@ -182,7 +184,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         </div>
 
         {/* Proof metrics */}
-        <div className="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-6 pt-8 border-t border-slate-200/80 dark:border-slate-800 w-full max-w-3xl">
+        <div className="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6 pt-8 border-t border-slate-200/80 dark:border-slate-800 w-full max-w-3xl">
           <div>
             <p className="text-2xl font-black text-slate-900 dark:text-white">350+</p>
             <p className="text-xs text-slate-500 font-medium mt-0.5">Tech Skills Recognized</p>
@@ -202,16 +204,20 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         </div>
 
         {/* Product Mockup Showcase */}
-        <div className="mt-16 w-full max-w-5xl rounded-3xl border border-slate-200/80 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl p-4 sm:p-6 shadow-2xl">
-          <div className="bg-slate-900 rounded-2xl p-6 sm:p-8 text-left border border-slate-800 shadow-inner">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-4 mb-6">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-rose-500" />
-                <div className="w-3 h-3 rounded-full bg-amber-500" />
-                <div className="w-3 h-3 rounded-full bg-emerald-500" />
-                <span className="text-xs text-slate-400 font-mono ml-3">careerpilot-ai.engine // live-copilot</span>
+        <div className="mt-14 sm:mt-16 w-full max-w-5xl rounded-3xl border border-slate-200/80 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl p-3 sm:p-6 shadow-2xl overflow-hidden">
+          <div className="bg-slate-900 rounded-2xl p-4 sm:p-8 text-left border border-slate-800 shadow-inner overflow-hidden">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-4 mb-6 gap-2 overflow-hidden">
+              <div className="flex items-center gap-2 min-w-0">
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-rose-500" />
+                  <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-amber-500" />
+                  <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-emerald-500" />
+                </div>
+                <span className="text-[11px] sm:text-xs text-slate-400 font-mono ml-1 sm:ml-2 truncate">
+                  careerpilot-ai.engine <span className="hidden sm:inline">// live-copilot</span>
+                </span>
               </div>
-              <Badge variant="emerald" size="sm">Active Session</Badge>
+              <Badge variant="emerald" size="sm" className="shrink-0 text-[10px] sm:text-xs">Active Session</Badge>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -240,18 +246,18 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       </section>
 
       {/* Core Platform Modules */}
-      <section className="py-20 px-6 sm:px-12 max-w-6xl mx-auto">
-        <div className="text-center max-w-2xl mx-auto mb-16">
+      <section className="py-16 sm:py-20 px-4 sm:px-12 max-w-6xl mx-auto w-full overflow-hidden">
+        <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
           <Badge variant="indigo" size="md">Complete Career Platform</Badge>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-3 tracking-tight">
+          <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-3 tracking-tight">
             Engineered for Campus Placements
           </h2>
-          <p className="text-slate-600 dark:text-slate-400 mt-3 text-sm sm:text-base">
+          <p className="text-slate-600 dark:text-slate-400 mt-3 text-xs sm:text-base">
             Everything you need to transform an academic CV into an industry-ready engineering profile.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
           {featureList.map((feature, idx) => (
             <Card key={idx} hover className="flex flex-col justify-between">
               <div>
@@ -273,15 +279,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       </section>
 
       {/* Bottom CTA Banner */}
-      <section className="py-20 px-6 sm:px-12 bg-indigo-900 text-white mt-auto">
+      <section className="py-16 sm:py-20 px-4 sm:px-12 bg-indigo-900 text-white mt-auto w-full overflow-hidden">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl sm:text-5xl font-black tracking-tight">
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-black tracking-tight">
             Ready to Accelerate Your Placement Journey?
           </h2>
-          <p className="text-indigo-200 mt-4 text-base sm:text-lg max-w-2xl mx-auto">
+          <p className="text-indigo-200 mt-4 text-sm sm:text-lg max-w-2xl mx-auto">
             Upload your resume or jump into the interactive demo student profile to test all features with zero friction.
           </p>
-          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 w-full sm:w-auto">
             <button
               type="button"
               onClick={onGetStarted}
@@ -301,17 +307,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       </section>
 
       {/* Footer */}
-      <footer className="py-8 px-6 sm:px-12 bg-slate-950 text-slate-400 text-xs border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-2">
-          <div className="w-5 h-5 rounded-md bg-indigo-600 text-white flex items-center justify-center font-bold text-[10px]">
+      <footer className="py-8 px-4 sm:px-12 bg-slate-950 text-slate-400 text-xs border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between gap-4 w-full overflow-hidden">
+        <div className="flex items-center gap-2 text-center sm:text-left">
+          <div className="w-5 h-5 rounded-md bg-indigo-600 text-white flex items-center justify-center font-bold text-[10px] shrink-0">
             CP
           </div>
-          <span>CareerPilot AI © 2026 · Founded by Kommana Kesava Ram Sai Tejas · Built with FastAPI, React & NLP.</span>
+          <span className="break-words">CareerPilot AI © 2026 · AI Career Copilot for Engineering Students</span>
         </div>
-        <div className="flex items-center gap-6">
-          <span>Terms</span>
-          <span>Privacy</span>
-          <span>Documentation</span>
+        <div className="flex items-center gap-4 sm:gap-6 text-slate-400">
+          <span className="hover:text-white transition-colors cursor-pointer">Terms</span>
+          <span className="hover:text-white transition-colors cursor-pointer">Privacy</span>
+          <span className="hover:text-white transition-colors cursor-pointer">Documentation</span>
         </div>
       </footer>
     </div>

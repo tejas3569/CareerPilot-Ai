@@ -27,7 +27,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   const { user, isDemo } = useAuth();
 
   return (
-    <header className="sticky top-0 z-30 h-16 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 px-4 sm:px-8 flex items-center justify-between">
+    <header className="sticky top-0 z-30 h-16 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 px-3 sm:px-8 flex items-center justify-between w-full max-w-full overflow-hidden">
       {/* Left side: Back/Forward buttons + hamburger + breadcrumb/target role */}
       <div className="flex items-center gap-2 sm:gap-3">
         {/* Navigation Arrow Keys (Back & Forward) */}
