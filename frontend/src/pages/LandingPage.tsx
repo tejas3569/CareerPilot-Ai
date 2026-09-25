@@ -217,9 +217,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   ];
 
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#FAF5EE] dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col font-sans">
       {/* 1. Premium Sticky Navbar */}
-      <header className="sticky top-0 z-40 bg-white/85 dark:bg-slate-950/85 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 px-4 sm:px-8 lg:px-12 h-16 sm:h-20 flex items-center justify-between transition-colors w-full">
+      <header className="sticky top-0 z-40 bg-[#FAF5EE]/90 dark:bg-slate-950/85 backdrop-blur-md border-b border-stone-200/80 dark:border-slate-800/80 px-4 sm:px-8 lg:px-12 h-16 sm:h-20 flex items-center justify-between transition-colors w-full">
         {/* Brand */}
         <a href="#" className="flex items-center gap-3 shrink-0 group">
           <img
@@ -253,10 +253,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         {/* Desktop Actions */}
         <div className="hidden sm:flex items-center gap-2.5 shrink-0">
           <Button
-            variant="ghost"
+            variant="outline"
             size="sm"
             onClick={onLogin}
-            className="text-xs font-semibold"
+            className="text-xs font-bold border-2 border-slate-300 dark:border-slate-700 hover:border-indigo-600 dark:hover:border-indigo-400 px-3.5 py-1.5 rounded-xl shadow-xs"
           >
             Sign In
           </Button>
@@ -318,8 +318,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
       {/* Mobile Menu Drawer */}
       {mobileMenuOpen && (
-        <div className="sm:hidden fixed inset-x-0 top-16 z-30 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 p-5 shadow-2xl space-y-4 animate-in slide-in-from-top-2 duration-200">
-          <nav className="flex flex-col space-y-3 pb-3 border-b border-slate-100 dark:border-slate-800 text-sm font-semibold">
+        <div className="sm:hidden fixed inset-x-0 top-16 z-30 bg-[#FAF5EE]/98 dark:bg-slate-950/95 backdrop-blur-xl border-b border-stone-200 dark:border-slate-800 p-5 shadow-2xl space-y-4 animate-in slide-in-from-top-2 duration-200">
+          <nav className="flex flex-col space-y-3 pb-3 border-b border-stone-200/80 dark:border-slate-800 text-sm font-semibold">
             {navLinks.map((link, idx) => (
               <a
                 key={idx}
@@ -352,7 +352,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   setMobileMenuOpen(false);
                   onLogin();
                 }}
-                className="w-full text-xs font-semibold"
+                className="w-full text-xs font-bold border-2 border-slate-300 dark:border-slate-700 hover:border-indigo-600"
               >
                 Sign In
               </Button>
@@ -614,7 +614,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       </section>
 
       {/* 5. How It Works (4-Step Visual Process) */}
-      <section id="how-it-works" className="py-20 sm:py-24 px-4 sm:px-8 lg:px-12 bg-slate-100/60 dark:bg-slate-900/40 border-y border-slate-200/80 dark:border-slate-800/80">
+      <section id="how-it-works" className="py-20 sm:py-24 px-4 sm:px-8 lg:px-12 bg-[#F5EFEB]/70 dark:bg-slate-900/40 border-y border-stone-200/80 dark:border-slate-800/80">
         <div className="max-w-6xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
             <Badge variant="emerald" size="sm">Structured Workflow</Badge>
@@ -900,19 +900,19 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3.5">
               <Button
                 size="lg"
-                variant="primary"
+                variant="white"
                 onClick={onGetStarted}
-                rightIcon={<ArrowRight className="w-4 h-4" />}
-                className="w-full sm:w-auto px-8 py-3.5 text-sm sm:text-base font-bold bg-white text-indigo-950 hover:bg-slate-100 shadow-xl"
+                rightIcon={<ArrowRight className="w-4 h-4 text-indigo-700" />}
+                className="w-full sm:w-auto px-8 py-3.5 text-sm sm:text-base font-black shadow-xl"
               >
                 Start Preparation Free
               </Button>
               <Button
                 size="lg"
-                variant="outline"
+                variant="inverted"
                 onClick={onTryDemo}
-                leftIcon={<Sparkles className="w-4 h-4 text-amber-300" />}
-                className="w-full sm:w-auto px-7 py-3.5 text-sm sm:text-base font-bold border-white/30 text-white hover:bg-white/10"
+                leftIcon={<Sparkles className="w-4 h-4 text-amber-400" />}
+                className="w-full sm:w-auto px-7 py-3.5 text-sm sm:text-base font-bold"
               >
                 Launch Instant Demo
               </Button>

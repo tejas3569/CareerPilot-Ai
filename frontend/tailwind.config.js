@@ -21,9 +21,22 @@ export default {
           900: '#312e81',
           950: '#1e1b4b',
         },
+        skin: {
+          50: '#FDFBF7',
+          100: '#FAF5EE',
+          200: '#F5EFEB',
+          300: '#EBDDCF',
+          400: '#DEC4AF',
+          500: '#CFA88B',
+          600: '#B08869',
+          700: '#8A6448',
+          800: '#674731',
+          900: '#483020',
+        },
         surface: {
           light: '#ffffff',
-          'light-elevated': '#f8fafc',
+          'light-elevated': '#f5efeb',
+          'light-skin': '#FAF5EE',
           dark: '#0b1120',
           'dark-elevated': '#111827',
         }

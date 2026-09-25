@@ -28,7 +28,7 @@ export const Card: React.FC<CardProps> = ({
     default: 'bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-card',
     elevated: 'bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-md',
     glass: 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/70 dark:border-slate-800/70 shadow-card',
-    subtle: 'bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/60 dark:border-slate-800/60',
+    subtle: 'bg-[#F5EFEB]/80 dark:bg-slate-900/40 border border-stone-200/80 dark:border-slate-800/60',
   };
 
   const hoverStyles = hover

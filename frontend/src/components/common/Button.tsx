@@ -2,7 +2,7 @@ import React, { ButtonHTMLAttributes } from 'react';
 import { Loader2 } from 'lucide-react';
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'danger' | 'ghost' | 'soft';
+  variant?: 'primary' | 'secondary' | 'outline' | 'danger' | 'ghost' | 'soft' | 'white' | 'inverted';
   size?: 'sm' | 'md' | 'lg';
   isLoading?: boolean;
   leftIcon?: React.ReactNode;
@@ -32,10 +32,12 @@ export const Button: React.FC<ButtonProps> = ({
   const variantStyles = {
     primary: "bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white shadow-sm hover:shadow-md shadow-indigo-500/20 dark:shadow-none border border-transparent",
     secondary: "bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-800 dark:hover:bg-slate-700 border border-transparent",
-    outline: "border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700 shadow-subtle",
+    outline: "border-2 border-slate-300 dark:border-slate-700 bg-white/90 dark:bg-slate-900/90 text-slate-800 dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-indigo-500 dark:hover:border-indigo-400 shadow-subtle",
     soft: "bg-indigo-50 hover:bg-indigo-100 text-indigo-700 dark:bg-indigo-950/60 dark:hover:bg-indigo-900/60 dark:text-indigo-300 border border-indigo-200/50 dark:border-indigo-800/60",
     danger: "bg-rose-600 hover:bg-rose-500 active:bg-rose-700 text-white shadow-sm hover:shadow-rose-500/20 border border-transparent",
-    ghost: "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/80 border border-transparent",
+    ghost: "text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/80 border border-transparent",
+    white: "bg-white hover:bg-slate-100 active:bg-slate-200 text-slate-950 font-bold shadow-md hover:shadow-lg border border-slate-200/80",
+    inverted: "bg-slate-900/90 hover:bg-slate-800 active:bg-slate-950 text-white font-bold border-2 border-indigo-400/80 hover:border-indigo-300 shadow-lg",
   };
 
   return (

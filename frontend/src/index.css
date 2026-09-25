@@ -3,13 +3,13 @@
 
 :root {
   color-scheme: light;
-  --bg-primary: #f8fafc;
+  --bg-primary: #FAF5EE;
   --bg-surface: #ffffff;
-  --bg-surface-elevated: #f1f5f9;
-  --border-subtle: rgba(226, 232, 240, 0.8);
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #94a3b8;
+  --bg-surface-elevated: #F5EFEB;
+  --border-subtle: rgba(226, 218, 206, 0.85);
+  --text-primary: #1c1917;
+  --text-secondary: #57534e;
+  --text-muted: #78716c;
   --primary: #4f46e5;
   --primary-hover: #4338ca;
   --accent: #0ea5e9;
@@ -50,8 +50,8 @@ body {
 }
 
 body {
-  background-color: #f8fafc;
-  color: #0f172a;
+  background-color: #FAF5EE;
+  color: #1c1917;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

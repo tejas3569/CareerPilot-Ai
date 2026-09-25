@@ -58,7 +58,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative transition-colors">
+    <div className="min-h-screen bg-[#FAF5EE] dark:bg-slate-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative transition-colors">
       {onToggleDarkMode && (
         <div className="absolute top-4 right-4 sm:top-6 sm:right-6">
           <button
