@@ -192,7 +192,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               className="w-8 h-8 rounded-xl shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform object-cover"
             />
             <div>
-              <h1 className="font-black text-sm tracking-tight text-slate-900 dark:text-white leading-none">
+              <h1 className="font-extrabold text-sm tracking-normal text-slate-900 dark:text-white leading-none">
                 CareerPilot <span className="text-indigo-600 dark:text-indigo-400">AI</span>
               </h1>
               <p className="text-[10px] text-slate-400 font-semibold tracking-wider uppercase mt-1">

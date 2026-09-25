@@ -234,7 +234,7 @@ export const ChatBotPage: React.FC<ChatBotPageProps> = ({ onShowToast }) => {
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+              <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-normal">
                 AI Career Copilot Chat
               </h1>
               <Badge variant="indigo" size="sm" className="hidden sm:inline-flex items-center gap-1 font-semibold">

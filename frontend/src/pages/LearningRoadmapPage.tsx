@@ -115,7 +115,7 @@ export const LearningRoadmapPage: React.FC<LearningRoadmapPageProps> = ({ onShow
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-normal">
             Personalized Learning Roadmap
           </h1>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
@@ -163,7 +163,7 @@ export const LearningRoadmapPage: React.FC<LearningRoadmapPageProps> = ({ onShow
             <Badge variant="indigo" size="sm" className="bg-white/15 text-indigo-100 border-white/20">
               {roadmap?.target_role || targetRole}
             </Badge>
-            <h2 className="text-xl sm:text-2xl font-black tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-extrabold tracking-normal">
               {roadmap?.title || 'Personalized Engineering Roadmap'}
             </h2>
             <p className="text-xs sm:text-sm text-indigo-200 max-w-xl">

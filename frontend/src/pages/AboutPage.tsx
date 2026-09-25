@@ -35,7 +35,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
           <Sparkles className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
           <span>About CareerPilot AI Platform</span>
         </div>
-        <h1 className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
+        <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 dark:text-white tracking-normal">
           Bridging the Gap Between College and Top Tech Careers
         </h1>
         <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed">
@@ -59,7 +59,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
           {/* Bio & Vision */}
           <div className="flex-1 space-y-4 text-center md:text-left">
             <div>
-              <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-normal">
                 Kommana Kesava Ram Sai Tejas
               </h2>
               <p className="text-sm font-bold text-indigo-600 dark:text-indigo-400 mt-0.5">

@@ -228,7 +228,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform object-cover"
           />
           <div className="flex items-center gap-2">
-            <span className="font-black text-base sm:text-lg tracking-tight text-slate-900 dark:text-white">
+            <span className="font-extrabold text-base sm:text-lg text-slate-900 dark:text-white">
               CareerPilot <span className="text-indigo-600 dark:text-indigo-400">AI</span>
             </span>
             <span className="hidden md:inline-flex px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-indigo-50 text-indigo-700 dark:bg-indigo-950/80 dark:text-indigo-300 rounded-md border border-indigo-200/60 dark:border-indigo-800/80">
@@ -385,7 +385,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           </div>
 
           {/* Main Headline */}
-          <h1 className="text-3xl sm:text-6xl lg:text-7xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.1]">
+          <h1 className="text-3xl sm:text-6xl lg:text-7xl font-extrabold text-slate-900 dark:text-white leading-[1.15]">
             Turn Your Engineering Degree into{' '}
             <span className="bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 bg-clip-text text-transparent">
               High-Yield Tech Offers
@@ -518,7 +518,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         <div className="max-w-6xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
             <Badge variant="rose" size="sm">The Placement Reality</Badge>
-            <h2 className="text-2xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-normal">
               Why Traditional Campus Placement Preparation Fails
             </h2>
             <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed">
@@ -571,7 +571,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       <section id="features" className="py-20 sm:py-28 px-4 sm:px-8 lg:px-12 max-w-7xl mx-auto w-full">
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
           <Badge variant="indigo" size="sm">End-to-End Capabilities</Badge>
-          <h2 className="text-2xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+          <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-normal">
             Eight Intelligent Engines Built for Placement Success
           </h2>
           <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed">
@@ -618,7 +618,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         <div className="max-w-6xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
             <Badge variant="emerald" size="sm">Structured Workflow</Badge>
-            <h2 className="text-2xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-normal">
               Four Steps from First Scan to Placement Offer
             </h2>
             <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed">
@@ -660,7 +660,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       <section id="showcase" className="py-20 sm:py-28 px-4 sm:px-8 lg:px-12 max-w-6xl mx-auto w-full">
         <div className="text-center max-w-3xl mx-auto mb-12 space-y-3">
           <Badge variant="purple" size="sm">Realistic Product Previews</Badge>
-          <h2 className="text-2xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+          <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-normal">
             See the Platform in Action
           </h2>
           <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
@@ -819,7 +819,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         <div className="max-w-6xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
             <Badge variant="indigo" size="sm">Real Candidate Stories</Badge>
-            <h2 className="text-2xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-normal">
               Trusted by Ambitious Engineering Students
             </h2>
             <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
@@ -854,7 +854,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       <section id="faq" className="py-20 sm:py-28 px-4 sm:px-8 lg:px-12 max-w-4xl mx-auto w-full">
         <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
           <Badge variant="slate" size="sm">Frequently Asked Questions</Badge>
-          <h2 className="text-2xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+          <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-normal">
             Clear Answers to Common Questions
           </h2>
           <p className="text-sm text-slate-600 dark:text-slate-400">
@@ -889,7 +889,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               Immediate Readiness
             </Badge>
 
-            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight">
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-normal leading-tight">
               Start Engineering Your Placement Roadmap Today
             </h2>
 

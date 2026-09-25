@@ -110,7 +110,7 @@ export const GetStartedPage: React.FC<GetStartedPageProps> = ({ onNavigate }) =>
             </div>
           </div>
 
-          <h1 className="text-2xl sm:text-4xl font-black tracking-tight leading-tight">
+          <h1 className="text-2xl sm:text-4xl font-extrabold tracking-normal leading-tight">
             Welcome to CareerPilot AI, <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-200 to-violet-200">{candidateName}</span>!
           </h1>
           <p className="text-xs sm:text-base text-indigo-200/90 leading-relaxed max-w-2xl">
@@ -155,10 +155,10 @@ export const GetStartedPage: React.FC<GetStartedPageProps> = ({ onNavigate }) =>
       <div className="space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
           <div>
-            <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-normal">
               Your 4-Step Placement Preparation Journey
             </h2>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
               Complete each phase to build a competitive, offer-ready profile.
             </p>
           </div>

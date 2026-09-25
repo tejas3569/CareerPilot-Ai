@@ -80,7 +80,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
           alt="CareerPilot AI"
           className="mx-auto w-14 h-14 rounded-2xl shadow-xl shadow-indigo-500/25 mb-4 object-cover"
         />
-        <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white">
+        <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-normal">
           Sign In to CareerPilot <span className="text-indigo-600 dark:text-indigo-400">AI</span>
         </h2>
         <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">

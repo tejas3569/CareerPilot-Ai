@@ -103,7 +103,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
             </Badge>
           </div>
 
-          <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-normal">
             Welcome to Your Career Command Center, {candidateName}
           </h1>
 

@@ -70,7 +70,7 @@ export const ScoreRing: React.FC<ScoreRingProps> = ({
           />
         </svg>
         <div className="absolute flex flex-col items-center justify-center text-center px-1">
-          <span className="text-2xl font-black tracking-tight text-slate-900 dark:text-white">
+          <span className="text-2xl font-bold tracking-normal text-slate-900 dark:text-white">
             {score}
             {maxScore === 100 && <span className="text-sm font-bold text-slate-400 dark:text-slate-500">%</span>}
           </span>
