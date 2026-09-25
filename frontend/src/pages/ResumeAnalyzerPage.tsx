@@ -19,6 +19,7 @@ import { Button } from '../components/common/Button';
 import { Badge } from '../components/common/Badge';
 import { ScoreRing } from '../components/common/ScoreRing';
 import { Skeleton } from '../components/common/Skeleton';
+import { Tabs } from '../components/common/Tabs';
 import { resumeApi } from '../api/endpoints';
 import { Resume, ResumeAnalysis } from '../types';
 
@@ -306,37 +307,16 @@ export const ResumeAnalyzerPage: React.FC<ResumeAnalyzerPageProps> = ({
           </div>
 
           {/* Navigation Tabs */}
-          <div className="flex border-b border-slate-200 dark:border-slate-800 gap-6">
-            <button
-              onClick={() => setActiveTab('overview')}
-              className={`pb-3 text-sm font-bold border-b-2 transition-colors ${
-                activeTab === 'overview'
-                  ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400'
-                  : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
-              }`}
-            >
-              Feedback & Suggestions
-            </button>
-            <button
-              onClick={() => setActiveTab('keywords')}
-              className={`pb-3 text-sm font-bold border-b-2 transition-colors ${
-                activeTab === 'keywords'
-                  ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400'
-                  : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
-              }`}
-            >
-              Extracted Skills ({analysis.detected_skills.length})
-            </button>
-            <button
-              onClick={() => setActiveTab('sections')}
-              className={`pb-3 text-sm font-bold border-b-2 transition-colors ${
-                activeTab === 'sections'
-                  ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400'
-                  : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
-              }`}
-            >
-              Parsed Sections
-            </button>
+          <div className="pt-2">
+            <Tabs
+              tabs={[
+                { id: 'overview', label: 'Feedback & Suggestions' },
+                { id: 'keywords', label: 'Extracted Skills', count: analysis.detected_skills.length },
+                { id: 'sections', label: 'Parsed Sections' },
+              ]}
+              activeTab={activeTab}
+              onChange={(tabId) => setActiveTab(tabId as any)}
+            />
           </div>
 
           {/* Tab 1: Overview (Strengths, Weaknesses, Suggestions) */}
